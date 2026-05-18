@@ -234,9 +234,7 @@ async function callClaude(prompt, onChunk) {
       max_tokens: 4000,
       stream: true,
       messages: [{ role: "user", content: prompt }],
-      system: `You are an expert personal trainer and strength coach. You create detailed, science-based workout plans.
-When asked to create a workout plan, respond ONLY with a valid JSON object — no markdown, no explanation, no backticks.
-The JSON structure must exactly match what is requested in the prompt.`
+      system: `You are an expert personal trainer and strength coach. You create detailed, science-based workout plans. You MUST respond with ONLY a valid JSON object. No markdown fences, no backticks, no explanation text before or after. Start your response with { and end with }. Do not include any text outside the JSON object.`
     }),
   });
   if (!res.ok) throw new Error("API error");
@@ -460,7 +458,10 @@ function FitForge() {
         rawJson = partial;
         setGenerateProgress(`Designing your programme... (${partial.split("\n").length} lines)`);
       });
-      const cleaned = rawJson.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+      let cleaned = rawJson.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+      const firstBrace = cleaned.indexOf('{');
+      const lastBrace = cleaned.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1) cleaned = cleaned.slice(firstBrace, lastBrace + 1);
       const parsed = JSON.parse(cleaned);
       setPlan(parsed);
       setCurrentWeek(1);
@@ -478,7 +479,10 @@ function FitForge() {
       const prompt = buildSummaryPrompt(profile, plan, sessionLogs);
       let raw = "";
       await callClaude(prompt, (p) => { raw = p; });
-      const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+      let cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+      const firstBrace = cleaned.indexOf('{');
+      const lastBrace = cleaned.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1) cleaned = cleaned.slice(firstBrace, lastBrace + 1);
       const parsed = JSON.parse(cleaned);
       setReviewData(parsed);
       setScreen("review");
@@ -535,7 +539,10 @@ function FitForge() {
     try {
       let raw = "";
       await callClaude(prompt, p => { raw = p; setGenerateProgress(`Building competition session... (${raw.split("\n").length} lines)`); });
-      const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+      let cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+      const firstBrace = cleaned.indexOf('{');
+      const lastBrace = cleaned.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1) cleaned = cleaned.slice(firstBrace, lastBrace + 1);
       const session = JSON.parse(cleaned);
       const comp = { id: compId, session, participants: [profile.uid, ...acceptedFriends.map(f => f.uid)], createdAt: new Date().toISOString(), createdBy: profile.uid };
       // Publish comp to shared storage so friends can see it
