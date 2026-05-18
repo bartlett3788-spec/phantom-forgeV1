@@ -34,7 +34,7 @@ function ApiKeySetup({ onDone }) {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": key.trim(), "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 5, messages: [{ role: "user", content: "Hi" }] })
+        body: JSON.stringify({ model: "claude-sonnet-4-5", max_tokens: 5, messages: [{ role: "user", content: "Hi" }] })
       });
       if (res.status === 401) { setError("Key rejected — check it was copied correctly and hasn't been revoked."); }
       else { localStorage.setItem("pf_apikey", key.trim()); onDone(); }
@@ -230,7 +230,7 @@ async function callClaude(prompt, onChunk) {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-api-key": localStorage.getItem("pf_apikey")||"", "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
     body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-5",
       max_tokens: 4000,
       stream: true,
       messages: [{ role: "user", content: prompt }],
@@ -1489,7 +1489,7 @@ async function analyseProgressPhoto(imageBase64, profile, sessionLogs, weekNum) 
     method: "POST",
     headers: { "Content-Type": "application/json", "x-api-key": localStorage.getItem("pf_apikey")||"", "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
     body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-5",
       max_tokens: 1000,
       system: `You are an expert body composition analyst. Analyse physique photos and provide estimates alongside provided biometric data. Always be encouraging. Respond ONLY with valid JSON, no markdown.`,
       messages: [{
