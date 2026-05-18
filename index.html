@@ -497,7 +497,7 @@ function FitForge() {
   // ── SCREENS ──
   if (screen === "splash") return <Splash onStart={() => setScreen(stored.profile ? "plan" : "profile")} hasProfile={!!stored.profile} />;
   if (screen === "profile") return <ProfileSetup onComplete={handleProfileComplete} existingProfile={profile} />;
-  if (screen === "generating") return <Generating progress={generateProgress} />;
+  if (screen === "generating") return <Generating progress={generateProgress} onRetry={() => setScreen(profile ? "profile" : "profile")} />;
   if (screen === "plan" && plan) return (
     <PlanHome
       profile={profile} plan={plan} sessionLogs={sessionLogs} currentWeek={currentWeek}
@@ -855,21 +855,49 @@ function ProfileSetup({ onComplete, existingProfile = null }) {
 }
 
 // ─── GENERATING ───────────────────────────────────────────────────────────────
-function Generating({ progress }) {
+function Generating({ progress, onRetry }) {
   const dots = ["⚡", "🏋️", "📊", "💪", "🎯"];
   const [dot, setDot] = useState(0);
+  const [elapsed, setElapsed] = useState(0);
+  const isError = progress && progress.toLowerCase().includes("error");
+
   useEffect(() => { const t = setInterval(() => setDot(d => (d + 1) % dots.length), 600); return () => clearInterval(t); }, []);
+  useEffect(() => { const t = setInterval(() => setElapsed(e => e + 1), 1000); return () => clearInterval(t); }, []);
+
+  const showSlow = elapsed > 30 && !isError;
+
   return (
-    <div style={{ background: T.bg, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem", textAlign: "center" }}>
+    <div style={{ background: T.bg, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem", textAlign: "center", position: "relative" }}>
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,255,136,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
-      <div style={{ fontSize: "3rem", marginBottom: "1.5rem", animation: "spin 2s linear infinite" }}>{dots[dot]}</div>
-      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", letterSpacing: "0.08em", letterSpacing: "0.08em", background: "linear-gradient(90deg, #00ff88, #00e5ff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: "1rem" }}>Building Your Plan</div>
-      <div style={{ fontSize: "0.85rem", color: T.text2, maxWidth: 280, lineHeight: 1.7 }}>{progress || "AI is designing your personalised 4-week programme..."}</div>
-      <div style={{ display: "flex", gap: "0.5rem", marginTop: "2rem" }}>
-        {[0, 1, 2].map(i => (
-          <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: "#00ff88", opacity: dot === i ? 1 : 0.2, transition: "opacity 0.3s" }} />
-        ))}
+      <div style={{ fontSize: "3rem", marginBottom: "1.5rem" }}>{isError ? "⚠️" : dots[dot]}</div>
+      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", letterSpacing: "0.08em", background: "linear-gradient(90deg, #00ff88, #00e5ff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: "1rem" }}>
+        {isError ? "Something Went Wrong" : "Building Your Plan"}
       </div>
+      <div style={{ fontSize: "0.85rem", color: isError ? T.pink : T.text2, maxWidth: 300, lineHeight: 1.7 }}>
+        {progress || "AI is designing your personalised 4-week programme..."}
+      </div>
+      {!isError && (
+        <div style={{ display: "flex", gap: "0.5rem", marginTop: "2rem" }}>
+          {[0, 1, 2].map(i => (
+            <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: "#00ff88", opacity: dot === i ? 1 : 0.2, transition: "opacity 0.3s" }} />
+          ))}
+        </div>
+      )}
+      {!isError && (
+        <div style={{ fontSize: "0.72rem", color: T.text3, marginTop: "1rem" }}>
+          {elapsed < 30 ? `${elapsed}s — AI is thinking...` : `${elapsed}s — this can take up to 60 seconds`}
+        </div>
+      )}
+      {(isError || showSlow) && onRetry && (
+        <button onClick={onRetry} style={{ marginTop: "1.5rem", background: "linear-gradient(90deg, #00ff88, #00e5ff)", border: "none", borderRadius: 10, padding: "0.8rem 2rem", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.95rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#000", cursor: "pointer" }}>
+          ↺ Try Again
+        </button>
+      )}
+      {onRetry && (
+        <button onClick={onRetry} style={{ marginTop: "0.8rem", background: "transparent", border: `1px solid ${T.border}`, borderRadius: 10, padding: "0.5rem 1.5rem", fontFamily: "inherit", fontSize: "0.78rem", color: T.text3, cursor: "pointer" }}>
+          ← Back to Profile
+        </button>
+      )}
       <style>{`@keyframes spin { 0%{transform:scale(1)} 50%{transform:scale(1.2)} 100%{transform:scale(1)} }`}</style>
     </div>
   );
