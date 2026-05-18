@@ -1,0 +1,2187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Phantom Forge</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;900&family=Barlow+Condensed:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; }
+    #root { max-width: 500px; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+
+
+// ─── PHANTOM FORGE — Black & Silver + Neon Theme ─────────────────────────────
+const T = {
+  bg:       "#000000",
+  s1:       "#0a0a0a",
+  s2:       "#111111",
+  s3:       "#1a1a1a",
+  border:   "#2a2a2a",
+  borderHi: "#505050",
+  silver:   "#c0c0c0",
+  silverDim:"rgba(192,192,192,0.08)",
+  text:     "#f0f0f0",
+  text2:    "#888888",
+  text3:    "#444444",
+  accent:   "#00ff88",
+  accentDim:"rgba(0,255,136,0.08)",
+  cyan:     "#00e5ff",
+  cyanDim:  "rgba(0,229,255,0.08)",
+  pink:     "#ff0080",
+  pinkDim:  "rgba(255,0,128,0.08)",
+  yellow:   "#ffff00",
+  yellowDim:"rgba(255,255,0,0.07)",
+  violet:   "#bf00ff",
+  violetDim:"rgba(191,0,255,0.08)",
+  orange:   "#ff6600",
+  orangeDim:"rgba(255,102,0,0.08)",
+  green:    "#00ff88",
+  greenDim: "rgba(0,255,136,0.08)",
+  blue:     "#00e5ff",
+  blueDim:  "rgba(0,229,255,0.08)",
+  red:      "#ff0080",
+  redDim:   "rgba(255,0,128,0.08)",
+};
+
+// ─── CONSTANTS ────────────────────────────────────────────────────────────────
+const EQUIPMENT_OPTIONS = [
+  { id: "barbell", label: "Barbell & Rack", icon: "🏋️" },
+  { id: "dumbbells", label: "Dumbbells", icon: "💪" },
+  { id: "bench", label: "Adjustable Bench", icon: "🪑" },
+  { id: "pullup", label: "Pull-Up Bar", icon: "🔝" },
+  { id: "dips", label: "Dip Bar", icon: "⬇️" },
+  { id: "cables", label: "Cable Machine", icon: "🔗" },
+  { id: "machines", label: "Weight Machines", icon: "⚙️" },
+  { id: "kettlebells", label: "Kettlebells", icon: "🫙" },
+  { id: "bands", label: "Resistance Bands", icon: "🔴" },
+  { id: "treadmill", label: "Treadmill", icon: "🏃" },
+  { id: "bike", label: "Stationary Bike", icon: "🚴" },
+  { id: "rower", label: "Rowing Machine", icon: "🚣" },
+];
+
+const SPLIT_OPTIONS = [
+  { id: "ppl", label: "PPL", full: "Push / Pull / Legs", desc: "Classic 3-day split, great for intermediate+", icon: "⚡" },
+  { id: "pplul", label: "PPL+UL", full: "Push Pull Legs + Upper Lower", desc: "5-day hybrid — best for hypertrophy & strength", icon: "🔥" },
+  { id: "ul", label: "Upper / Lower", full: "Upper / Lower Split", desc: "4-day split, balanced and beginner-friendly", icon: "⚖️" },
+  { id: "fullbody", label: "Full Body", full: "Full Body", desc: "3x/week, great for beginners & fat loss", icon: "💥" },
+  { id: "bro", label: "Bro Split", full: "Chest / Back / Shoulders / Arms / Legs", desc: "Classic 5-day bodypart split", icon: "💪" },
+  { id: "athletic", label: "Athletic", full: "Athletic Performance", desc: "Power, speed, agility focus", icon: "🏆" },
+];
+
+const GOAL_OPTIONS = [
+  { id: "muscle", label: "Build Muscle", desc: "Hypertrophy focus, progressive overload", icon: "💪", color: T.cyan },
+  { id: "strength", label: "Get Stronger", desc: "Heavy compounds, strength progression", icon: "🏋️", color: T.accent },
+  { id: "fat_loss", label: "Fat Loss", desc: "Calorie burn, retain muscle, conditioning", icon: "🔥", color: T.pink },
+  { id: "toning", label: "Tone & Define", desc: "Moderate weight, higher reps, lean look", icon: "✨", color: T.violet },
+  { id: "fitness", label: "General Fitness", desc: "Balanced strength, cardio & health", icon: "❤️", color: T.yellow },
+  { id: "athletic", label: "Athletic Performance", desc: "Power, speed, functional movement", icon: "⚡", color: T.orange },
+];
+
+const EXPERIENCE_OPTIONS = [
+  { id: "beginner", label: "Beginner", desc: "< 1 year training", icon: "🌱" },
+  { id: "intermediate", label: "Intermediate", desc: "1–3 years consistent training", icon: "📈" },
+  { id: "advanced", label: "Advanced", desc: "3+ years, strong foundation", icon: "🏆" },
+];
+
+const DAYS_OPTIONS = [2, 3, 4, 5, 6];
+
+const SESSION_DURATION_OPTIONS = [
+  { id: 20, label: "20 min", desc: "Express — compound supersets, minimal rest", icon: "⚡" },
+  { id: 30, label: "30 min", desc: "Quick — focused, efficient, no fluff", icon: "🎯" },
+  { id: 45, label: "45 min", desc: "Standard — solid volume with good pacing", icon: "💪" },
+  { id: 60, label: "60 min", desc: "Full session — maximum volume & pump", icon: "🔥" },
+];
+
+// Rest preference: your exact timings
+// Short  = 45s between pump/isolation sets
+// Medium = 75s between most hypertrophy sets
+// Long   = 120s between heavy compound sets (your personal max)
+const REST_PREFS = [
+  {
+    id: "short",
+    label: "Short",
+    desc: "45s / 60s / 75s",
+    detail: "Pump sets 45s · Hypertrophy 60s · Compounds 75s",
+    icon: "⚡",
+    color: T.pink,
+    // [pump, hypertrophy, strength]
+    seconds: { pump: 45, hypertrophy: 60, strength: 75 },
+  },
+  {
+    id: "medium",
+    label: "Medium",
+    desc: "45s / 75s / 90s",
+    detail: "Pump sets 45s · Hypertrophy 75s · Compounds 90s",
+    icon: "🎯",
+    color: T.yellow,
+    seconds: { pump: 45, hypertrophy: 75, strength: 90 },
+  },
+  {
+    id: "long",
+    label: "Long",
+    desc: "60s / 75s / 120s",
+    detail: "Pump sets 60s · Hypertrophy 75s · Compounds 120s — max",
+    icon: "🧱",
+    color: T.violet,
+    seconds: { pump: 60, hypertrophy: 75, strength: 120 },
+  },
+];
+
+// ─── LOCAL STORAGE ─────────────────────────────────────────────────────────
+const LS = "phantomforge_v1";
+const load = () => { try { const d = localStorage.getItem(LS); return d ? JSON.parse(d) : {}; } catch { return {}; } };
+const save = (data) => { try { localStorage.setItem(LS, JSON.stringify(data)); } catch {} };
+
+// ─── SHARED STORAGE (cross-user via window.storage) ────────────────────────
+// Keys: users:{uid}, friends:{uid}, compday:{compId}, compscore:{compId}:{uid}
+async function sharedGet(key) {
+  try { const r = await window.storage.get(key, true); return r ? JSON.parse(r.value) : null; } catch { return null; }
+}
+async function sharedSet(key, val) {
+  try { await window.storage.set(key, JSON.stringify(val), true); return true; } catch { return false; }
+}
+async function sharedList(prefix) {
+  try { const r = await window.storage.list(prefix, true); return r?.keys || []; } catch { return []; }
+}
+function genUID() { return "u" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); }
+function slugify(name) { return name.toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20); }
+
+// ─── COMPETITION SCORING ────────────────────────────────────────────────────
+function calcCompScore(log) {
+  if (!log) return 0;
+  let vol = 0, sets = 0, totalSets = 0;
+  Object.values(log.sets || {}).forEach(exSets => {
+    exSets.forEach(s => { totalSets++; if (s.logged) { sets++; vol += s.weight * s.reps; } });
+  });
+  const completion = totalSets > 0 ? sets / totalSets : 0;
+  return Math.round(vol * completion);
+}
+
+// ─── CALL CLAUDE API ──────────────────────────────────────────────────────────
+async function callClaude(prompt, onChunk) {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 4000,
+      stream: true,
+      messages: [{ role: "user", content: prompt }],
+      system: `You are an expert personal trainer and strength coach. You create detailed, science-based workout plans.
+When asked to create a workout plan, respond ONLY with a valid JSON object — no markdown, no explanation, no backticks.
+The JSON structure must exactly match what is requested in the prompt.`
+    }),
+  });
+  if (!res.ok) throw new Error("API error");
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let full = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    const chunk = decoder.decode(value);
+    const lines = chunk.split("\n");
+    for (const line of lines) {
+      if (line.startsWith("data: ")) {
+        const data = line.slice(6);
+        if (data === "[DONE]") continue;
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.type === "content_block_delta" && parsed.delta?.text) {
+            full += parsed.delta.text;
+            if (onChunk) onChunk(full);
+          }
+        } catch {}
+      }
+    }
+  }
+  return full;
+}
+
+// ─── GENERATE PLAN PROMPT ─────────────────────────────────────────────────────
+function buildPlanPrompt(profile, weekNum = 1, prevSummary = null, focusAreas = null) {
+  const eq = profile.equipment.join(", ");
+  const isFirstPlan = !prevSummary;
+  const context = isFirstPlan
+    ? `This is their first 4-week plan.`
+    : `Previous 4-week summary: ${prevSummary}. User wants to focus on: ${focusAreas?.join(", ") || "overall improvement"}.`;
+
+  // Derive exact rest seconds from profile preference
+  const restPref = REST_PREFS.find(r => r.id === (profile.restPreference || "medium")) || REST_PREFS[1];
+  const restRules = `restSeconds MUST follow user preference (${restPref.label}): pump/finisher sets = ${restPref.seconds.pump}s, hypertrophy sets = ${restPref.seconds.hypertrophy}s, strength/compound sets = ${restPref.seconds.strength}s. Never exceed ${restPref.seconds.strength}s.`;
+  const sessionMins = profile.sessionDuration || 45;
+
+  return `Create a 4-week personalised workout plan for this user:
+- Age: ${profile.age}, Height: ${profile.height}cm, Weight: ${profile.weight}kg
+- Experience: ${profile.experience}
+- Primary goal: ${profile.goal}
+- Training days per week: ${profile.daysPerWeek}
+- Preferred split: ${profile.split}
+- Available equipment: ${eq}
+- Target session duration: ${sessionMins} minutes (strict — fit all exercises into this time)
+- Rest preference: ${restPref.label} — ${restPref.detail}
+- ${context}
+${profile.notes ? `- Trainer notes: ${profile.notes}` : ""}
+
+Return ONLY this exact JSON structure (no markdown, no explanation):
+{
+  "planName": "string",
+  "planSummary": "2-3 sentence overview",
+  "weeklyFocus": ["week1 focus", "week2 focus", "week3 focus", "week4 focus"],
+  "schedule": {
+    "monday": "rest" or "Push" or "Pull" etc,
+    "tuesday": "...",
+    "wednesday": "...",
+    "thursday": "...",
+    "friday": "...",
+    "saturday": "...",
+    "sunday": "..."
+  },
+  "weeks": [
+    {
+      "week": 1,
+      "focus": "string",
+      "sessions": [
+        {
+          "day": "Tuesday",
+          "type": "Push",
+          "color": "#ff5e3a",
+          "duration": "${sessionMins} min",
+          "warmup": "5 min light cardio + arm circles",
+          "exercises": [
+            {
+              "name": "Exercise Name",
+              "sets": 4,
+              "reps": "8-10",
+              "restSeconds": ${restPref.seconds.strength},
+              "targetWeight": 20,
+              "type": "strength",
+              "tip": "Form tip here",
+              "muscles": "Primary muscles"
+            }
+          ],
+          "cooldown": "5 min stretching focus"
+        }
+      ]
+    }
+  ]
+}
+
+Rules:
+- Use ONLY the equipment listed. If no barbell, use dumbbells/bodyweight.
+- Weeks 1-4 should progressively increase intensity (more weight, reps, or sets each week).
+- ${sessionMins <= 30 ? `${sessionMins} min sessions: 4-5 exercises max per session, supersets where possible, no pump finishers.` : sessionMins <= 45 ? `${sessionMins} min sessions: 5-6 main exercises plus 2 pump finishers, keep it tight.` : `${sessionMins} min sessions: 5-7 main exercises plus 2-3 pump/finisher exercises marked with type "pump".`}
+- targetWeight should be realistic starting weights in kg based on experience level.
+- ${restRules}
+- Each week's sessions should have the same structure but progressively harder.
+- For ${profile.daysPerWeek} training days, schedule rest days appropriately.
+- Make the plan genuinely excellent and specific to this user.`;
+}
+
+// ─── PROGRESS SUMMARY PROMPT ──────────────────────────────────────────────────
+function buildSummaryPrompt(profile, plan, sessionLogs) {
+  const logSummary = JSON.stringify(sessionLogs).slice(0, 2000);
+  return `Analyse this user's 4-week workout progress and provide a summary.
+
+User profile: ${profile.age}yo, ${profile.experience}, goal: ${profile.goal}
+Plan name: ${plan.planName}
+Session logs (weights/reps logged): ${logSummary}
+
+Return ONLY this exact JSON (no markdown):
+{
+  "headline": "One powerful motivational headline",
+  "overallScore": 85,
+  "summary": "2-3 sentence overall assessment",
+  "strengths": ["strength 1", "strength 2", "strength 3"],
+  "improvements": ["area to improve 1", "area to improve 2", "area to improve 3"],
+  "muscleGroupScores": {
+    "Chest": 78,
+    "Back": 82,
+    "Shoulders": 70,
+    "Arms": 85,
+    "Legs": 65,
+    "Core": 60
+  },
+  "nextFocusOptions": [
+    {"id": "legs", "label": "Leg Strength", "desc": "Your legs need more attention based on logged weights"},
+    {"id": "core", "label": "Core & Stability", "desc": "Core work will unlock bigger lifts"},
+    {"id": "upper", "label": "Upper Body Size", "desc": "Push more volume for chest/back growth"},
+    {"id": "conditioning", "label": "Conditioning", "desc": "Add cardio circuits to boost fitness"},
+    {"id": "strength", "label": "Raw Strength", "desc": "Focus on 5-rep max progressions"}
+  ],
+  "stats": {
+    "sessionsCompleted": 12,
+    "totalVolume": 45000,
+    "avgSessionDuration": 52,
+    "estimatedStrengthGain": "+8%"
+  }
+}`;
+}
+
+// ─── MAIN APP ──────────────────────────────────────────────────────────────────
+function FitForge() {
+  const stored = load();
+  const [screen, setScreen] = useState(stored.screen || "splash");
+  const [profile, setProfile] = useState(stored.profile || null);
+  const [plan, setPlan] = useState(stored.plan || null);
+  const [sessionLogs, setSessionLogs] = useState(stored.sessionLogs || {});
+  const [currentWeek, setCurrentWeek] = useState(stored.currentWeek || 1);
+  const [generateProgress, setGenerateProgress] = useState("");
+  const [activeSession, setActiveSession] = useState(null);
+  const [reviewData, setReviewData] = useState(stored.reviewData || null);
+  const [planHistory, setPlanHistory] = useState(stored.planHistory || []);
+  // Social state
+  const [friends, setFriends] = useState(stored.friends || []);      // [{uid, username, name, status: "pending_out"|"pending_in"|"accepted"}]
+  const [compDay, setCompDay] = useState(stored.compDay || null);     // current active comp session
+  const [compScores, setCompScores] = useState({});                   // {uid: score}
+  const [socialTab, setSocialTab] = useState("friends");
+  const [progressPhotos, setProgressPhotos] = useState(stored.progressPhotos || []);
+
+  useEffect(() => {
+    save({ screen, profile, plan, sessionLogs, currentWeek, reviewData, planHistory, friends, compDay, progressPhotos });
+  }, [screen, profile, plan, sessionLogs, currentWeek, reviewData, planHistory, friends, compDay, progressPhotos]);
+
+  // Publish user public profile to shared storage whenever profile changes
+  useEffect(() => {
+    if (profile?.uid) {
+      const pub = { uid: profile.uid, username: profile.username, name: profile.name, goal: profile.goal, experience: profile.experience };
+      sharedSet(`users:${profile.uid}`, pub);
+      // Publish this cycle's session summary for friends to view
+      const summary = { uid: profile.uid, username: profile.username, name: profile.name, planName: plan?.planName, sessionsThisCycle: Object.keys(sessionLogs).length, totalSessions: plan?.weeks?.reduce((a,w)=>a+(w.sessions?.length||0),0)||0, lastActive: new Date().toISOString().slice(0,10) };
+      sharedSet(`cycle:${profile.uid}`, summary);
+    }
+  }, [profile, sessionLogs, plan]);
+
+  // Poll for incoming friend requests every 10 seconds when on social screen
+  useEffect(() => {
+    if (screen !== "social" || !profile?.uid) return;
+    const poll = async () => {
+      const incoming = await sharedGet(`friendreq:${profile.uid}`) || [];
+      setFriends(prev => {
+        const updated = [...prev];
+        incoming.forEach(req => {
+          if (!updated.find(f => f.uid === req.uid)) {
+            updated.push({ uid: req.uid, username: req.username, name: req.name, status: "pending_in" });
+          }
+        });
+        return updated;
+      });
+      // Also check comp scores
+      if (compDay) {
+        const keys = await sharedList(`compscore:${compDay.id}:`);
+        const scores = {};
+        for (const k of keys) {
+          const parts = k.split(":");
+          const uid = parts[2];
+          const data = await sharedGet(k);
+          if (data) scores[uid] = data;
+        }
+        setCompScores(scores);
+      }
+    };
+    poll();
+    const t = setInterval(poll, 10000);
+    return () => clearInterval(t);
+  }, [screen, profile, compDay]);
+
+  async function generatePlan(profileData, prevSummary = null, focusAreas = null) {
+    setGenerateProgress("Building your personalised plan...");
+    try {
+      const prompt = buildPlanPrompt(profileData, 1, prevSummary, focusAreas);
+      let rawJson = "";
+      await callClaude(prompt, (partial) => {
+        rawJson = partial;
+        setGenerateProgress(`Designing your programme... (${partial.split("\n").length} lines)`);
+      });
+      const cleaned = rawJson.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+      const parsed = JSON.parse(cleaned);
+      setPlan(parsed);
+      setCurrentWeek(1);
+      setSessionLogs({});
+      setScreen("plan");
+    } catch (e) {
+      console.error(e);
+      setGenerateProgress("Error generating plan. Please try again.");
+    }
+  }
+
+  async function generateReview() {
+    setScreen("reviewing");
+    try {
+      const prompt = buildSummaryPrompt(profile, plan, sessionLogs);
+      let raw = "";
+      await callClaude(prompt, (p) => { raw = p; });
+      const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+      const parsed = JSON.parse(cleaned);
+      setReviewData(parsed);
+      setScreen("review");
+    } catch (e) { console.error(e); setScreen("review"); }
+  }
+
+  async function handleProfileComplete(p) {
+    const uid = p.uid || stored.profile?.uid || genUID();
+    const fullProfile = { ...p, uid };
+    setProfile(fullProfile);
+    setScreen("generating");
+    generatePlan(fullProfile);
+  }
+
+  async function sendFriendRequest(targetUsername) {
+    // Find user by username in shared storage
+    const keys = await sharedList("users:");
+    for (const k of keys) {
+      const user = await sharedGet(k);
+      if (user?.username === targetUsername && user.uid !== profile.uid) {
+        // Add to their incoming requests
+        const existing = await sharedGet(`friendreq:${user.uid}`) || [];
+        const already = existing.find(r => r.uid === profile.uid);
+        if (!already) {
+          await sharedSet(`friendreq:${user.uid}`, [...existing, { uid: profile.uid, username: profile.username, name: profile.name }]);
+        }
+        setFriends(prev => prev.find(f => f.uid === user.uid) ? prev : [...prev, { uid: user.uid, username: user.username, name: user.name, status: "pending_out" }]);
+        return { ok: true, name: user.name };
+      }
+    }
+    return { ok: false };
+  }
+
+  async function acceptFriend(uid) {
+    setFriends(prev => prev.map(f => f.uid === uid ? { ...f, status: "accepted" } : f));
+    // Notify them they were accepted by adding us to their accepted list
+    const existing = await sharedGet(`friendreq:${profile.uid}`) || [];
+    await sharedSet(`friendreq:${profile.uid}`, existing.filter(r => r.uid !== uid));
+    const theirReqs = await sharedGet(`friendreq:${uid}`) || [];
+    // Clean their outgoing — add to accepted list on both sides via shared
+    await sharedSet(`accepted:${profile.uid}:${uid}`, { accepted: true, date: new Date().toISOString() });
+    await sharedSet(`accepted:${uid}:${profile.uid}`, { accepted: true, date: new Date().toISOString() });
+  }
+
+  function declineFriend(uid) {
+    setFriends(prev => prev.filter(f => f.uid !== uid));
+  }
+
+  async function startCompetition(acceptedFriends) {
+    const compId = "comp" + Date.now().toString(36);
+    const prompt = buildCompPrompt(profile, acceptedFriends);
+    setGenerateProgress("Generating competition workout...");
+    setScreen("generating");
+    try {
+      let raw = "";
+      await callClaude(prompt, p => { raw = p; setGenerateProgress(`Building competition session... (${raw.split("\n").length} lines)`); });
+      const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+      const session = JSON.parse(cleaned);
+      const comp = { id: compId, session, participants: [profile.uid, ...acceptedFriends.map(f => f.uid)], createdAt: new Date().toISOString(), createdBy: profile.uid };
+      // Publish comp to shared storage so friends can see it
+      await sharedSet(`compday:${compId}`, comp);
+      // Notify each friend
+      for (const f of acceptedFriends) {
+        const notifs = await sharedGet(`compinvite:${f.uid}`) || [];
+        await sharedSet(`compinvite:${f.uid}`, [...notifs, { compId, from: profile.username, name: session.name }]);
+      }
+      setCompDay(comp);
+      setScreen("compday");
+    } catch (e) { console.error(e); setScreen("social"); }
+  }
+
+  // ── SCREENS ──
+  if (screen === "splash") return <Splash onStart={() => setScreen(stored.profile ? "plan" : "profile")} hasProfile={!!stored.profile} />;
+  if (screen === "profile") return <ProfileSetup onComplete={handleProfileComplete} existingProfile={profile} />;
+  if (screen === "generating") return <Generating progress={generateProgress} />;
+  if (screen === "plan" && plan) return (
+    <PlanHome
+      profile={profile} plan={plan} sessionLogs={sessionLogs} currentWeek={currentWeek}
+      setCurrentWeek={setCurrentWeek} friends={friends}
+      onStartSession={(session, weekIdx) => setActiveSession({ session, weekIdx })}
+      onReview={generateReview}
+      onEditProfile={() => setScreen("profile")}
+      onSocial={() => setScreen("social")}
+      onCompDay={() => setScreen("compday")}
+      onPhotoCheckIn={() => setScreen("photo")}
+      compDay={compDay}
+    />
+  );
+  if (screen === "reviewing") return <Reviewing />;
+  if (screen === "review" && reviewData) return (
+    <Review profile={profile} reviewData={reviewData} plan={plan}
+      onNextPlan={(focusAreas, newProfile) => {
+        const p = newProfile || profile;
+        if (newProfile) setProfile(p);
+        setPlanHistory(h => [...h, { plan, sessionLogs, review: reviewData, date: new Date().toISOString() }]);
+        setReviewData(null);
+        setScreen("generating");
+        generatePlan(p, reviewData.summary, focusAreas);
+      }}
+    />
+  );
+  if (screen === "social") return (
+    <Social
+      profile={profile} friends={friends} compDay={compDay}
+      onBack={() => setScreen("plan")}
+      onSendRequest={sendFriendRequest}
+      onAccept={acceptFriend}
+      onDecline={declineFriend}
+      onStartComp={startCompetition}
+      onJoinComp={async (compId) => {
+        const comp = await sharedGet(`compday:${compId}`);
+        if (comp) { setCompDay(comp); setScreen("compday"); }
+      }}
+      tab={socialTab} setTab={setSocialTab}
+    />
+  );
+  if (screen === "compday") return (
+    <CompDay
+      profile={profile} compDay={compDay} friends={friends}
+      compScores={compScores}
+      onBack={() => setScreen("social")}
+      onComplete={async (log) => {
+        const score = calcCompScore(log);
+        await sharedSet(`compscore:${compDay.id}:${profile.uid}`, { uid: profile.uid, username: profile.username, name: profile.name, score, completedAt: new Date().toISOString() });
+        setCompScores(prev => ({ ...prev, [profile.uid]: { uid: profile.uid, username: profile.username, name: profile.name, score, completedAt: new Date().toISOString() } }));
+        setScreen("compleaderboard");
+      }}
+    />
+  );
+  if (screen === "compleaderboard") return (
+    <CompLeaderboard
+      profile={profile} compDay={compDay} compScores={compScores} friends={friends}
+      onBack={() => setScreen("social")}
+      onRefresh={async () => {
+        if (!compDay) return;
+        const keys = await sharedList(`compscore:${compDay.id}:`);
+        const scores = {};
+        for (const k of keys) { const d = await sharedGet(k); if (d) scores[d.uid] = d; }
+        setCompScores(scores);
+      }}
+    />
+  );
+  if (screen === "photo") return (
+    <ProgressPhoto
+      profile={profile}
+      sessionLogs={sessionLogs}
+      weekNum={currentWeek}
+      existingPhotos={progressPhotos}
+      onSave={(data) => {
+        setProgressPhotos(prev => [...prev.filter(p => p.week !== currentWeek), data]);
+        setScreen("plan");
+      }}
+      onBack={() => setScreen("plan")}
+    />
+  );
+  if (activeSession) return (
+    <WorkoutSession
+      session={activeSession.session}
+      weekIdx={activeSession.weekIdx}
+      profile={profile}
+      existingLog={sessionLogs[`w${activeSession.weekIdx}_${activeSession.session.day}`] || null}
+      onComplete={(log) => {
+        setSessionLogs(prev => ({ ...prev, [`w${activeSession.weekIdx}_${activeSession.session.day}`]: log }));
+        setActiveSession(null);
+      }}
+      onBack={() => setActiveSession(null)}
+    />
+  );
+  return <Splash onStart={() => setScreen("profile")} hasProfile={false} />;
+}
+
+// ─── SPLASH ───────────────────────────────────────────────────────────────────
+function Splash({ onStart, hasProfile }) {
+  return (
+    <div style={{ background: T.bg, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem", position: "relative", overflow: "hidden" }}>
+      {/* Grid background */}
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px)", backgroundSize: "40px 40px", pointerEvents: "none" }} />
+      {/* Glow */}
+      <div style={{ position: "absolute", top: "-20%", left: "50%", transform: "translateX(-50%)", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,255,136,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ textAlign: "center", maxWidth: 360, position: "relative" }}>
+        {/* Logo mark */}
+        <div style={{ width: 72, height: 72, borderRadius: 18, background: "linear-gradient(135deg, #0a0a0a, #1a1a1a)", border: "1.5px solid #2a2a2a", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.5rem", boxShadow: "0 0 30px rgba(0,255,136,0.15)" }}>
+          <span style={{ fontSize: "2.2rem" }}>👻</span>
+        </div>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.8rem", letterSpacing: "0.18em", color: T.text, lineHeight: 1, textShadow: "0 0 40px rgba(0,255,136,0.2)" }}>PHANTOM</div>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.8rem", letterSpacing: "0.18em", lineHeight: 1, background: "linear-gradient(90deg, #00ff88, #00e5ff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: "0.5rem" }}>FORGE</div>
+        <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.3em", color: T.text3, marginBottom: "2rem" }}>AI-Powered Training Intelligence</div>
+        <div style={{ fontSize: "0.88rem", color: T.text2, lineHeight: 1.8, marginBottom: "2.5rem" }}>
+          Your profile. Your equipment. Your goals.<br />
+          A fully custom plan — rebuilt every 4 weeks by AI.
+        </div>
+        <button onClick={onStart} style={{ width: "100%", padding: "1rem", fontSize: "0.95rem", fontWeight: 900, cursor: "pointer", fontFamily: "'Barlow Condensed', sans-serif", textTransform: "uppercase", letterSpacing: "0.12em", color: T.bg, background: "linear-gradient(90deg, #00ff88, #00e5ff)", border: "none", borderRadius: 10, boxShadow: "0 0 20px rgba(0,255,136,0.3)" }}>
+          {hasProfile ? "Continue Training →" : "Build My Plan →"}
+        </button>
+        {hasProfile && (
+          <button onClick={() => { localStorage.removeItem(LS); window.location.reload(); }} style={{ marginTop: "1rem", background: "none", border: "none", color: T.text3, fontSize: "0.75rem", cursor: "pointer", textDecoration: "underline" }}>
+            Start fresh
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── PROFILE SETUP ────────────────────────────────────────────────────────────
+function ProfileSetup({ onComplete, existingProfile = null }) {
+  const [step, setStep] = useState(0);
+  const [data, setData] = useState(existingProfile || {
+    name: "", username: "", age: "", height: "", weight: "", experience: "",
+    goal: "", equipment: [], split: "", daysPerWeek: 4,
+    sessionDuration: 45, restPreference: "medium",
+    notes: ""
+  });
+
+  const update = (k, v) => setData(prev => ({ ...prev, [k]: v }));
+  const toggleEquip = (id) => update("equipment", data.equipment.includes(id) ? data.equipment.filter(x => x !== id) : [...data.equipment, id]);
+
+  const steps = [
+    { title: "About You", valid: data.name && data.username && data.username.length >= 3 && data.age && data.height && data.weight },
+    { title: "Experience & Goal", valid: data.experience && data.goal },
+    { title: "Your Equipment", valid: data.equipment.length > 0 },
+    { title: "Training Preferences", valid: data.split && data.daysPerWeek && data.sessionDuration && data.restPreference },
+  ];
+
+  const canNext = steps[step]?.valid;
+
+  const inp = (label, key, type = "text", placeholder = "") => (
+    <div style={{ marginBottom: "1rem" }}>
+      <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.4rem" }}>{label}</div>
+      <input type={type} placeholder={placeholder} value={data[key]}
+        onChange={e => update(key, type === "number" ? parseFloat(e.target.value) || "" : e.target.value)}
+        style={{ width: "100%", background: T.s2, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "0.7rem 1rem", color: T.text, fontSize: "0.95rem", outline: "none", fontFamily: "inherit", WebkitAppearance: "none" }} />
+    </div>
+  );
+
+  return (
+    <div style={{ background: T.bg, minHeight: "100vh", display: "flex", flexDirection: "column", maxWidth: 500, margin: "0 auto" }}>
+      {/* Header */}
+      <div style={{ padding: "1.2rem 1.5rem", borderBottom: "1px solid #2a2a2a", background: "#050505" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.3rem", letterSpacing: "0.08em", color: T.accent }}>PHANTOM FORGE</div>
+          <div style={{ fontSize: "0.72rem", fontWeight: 700, color: T.text3, textTransform: "uppercase", letterSpacing: "0.1em" }}>Step {step + 1} of {steps.length}</div>
+        </div>
+        <div style={{ height: 4, background: T.s3, borderRadius: 2, overflow: "hidden" }}>
+          <div style={{ height: "100%", width: `${((step + 1) / steps.length) * 100}%`, background: "linear-gradient(90deg, #00ff88, #00e5ff)", borderRadius: 2, transition: "width 0.4s ease" }} />
+        </div>
+        <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1.5rem", textTransform: "uppercase", letterSpacing: "0.05em", marginTop: "0.8rem", color: T.text }}>
+          {steps[step].title}
+        </div>
+      </div>
+
+      <div style={{ flex: 1, overflowY: "auto", padding: "1.5rem" }}>
+        {step === 0 && (
+          <>
+            {inp("Your Name", "name", "text", "e.g. Sam")}
+            <div style={{ marginBottom: "1rem" }}>
+              <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.4rem" }}>Username <span style={{ color: T.accent }}>@</span></div>
+              <div style={{ position: "relative" }}>
+                <span style={{ position: "absolute", left: "0.9rem", top: "50%", transform: "translateY(-50%)", color: T.accent, fontWeight: 700, fontSize: "1rem", pointerEvents: "none" }}>@</span>
+                <input type="text" placeholder="yourname" value={data.username}
+                  onChange={e => update("username", slugify(e.target.value))}
+                  maxLength={20}
+                  style={{ width: "100%", background: T.s2, border: `1.5px solid ${data.username.length >= 3 ? T.accent : T.border}`, borderRadius: 10, padding: "0.7rem 1rem 0.7rem 2rem", color: T.text, fontSize: "0.95rem", outline: "none", fontFamily: "inherit", WebkitAppearance: "none" }} />
+              </div>
+              <div style={{ fontSize: "0.7rem", color: T.text3, marginTop: "0.3rem" }}>
+                {data.username.length < 3 ? "Min 3 characters · letters, numbers and _ only" : <span style={{ color: T.accent }}>✓ @{data.username} — friends can find you with this</span>}
+              </div>
+            </div>
+            {inp("Age", "age", "number", "e.g. 30")}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+              <div style={{ marginBottom: "1rem" }}>
+                <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.4rem" }}>Height (cm)</div>
+                <input type="number" placeholder="175" value={data.height} onChange={e => update("height", parseFloat(e.target.value) || "")}
+                  style={{ width: "100%", background: T.s2, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "0.7rem 1rem", color: T.text, fontSize: "0.95rem", outline: "none", fontFamily: "inherit", WebkitAppearance: "none" }} />
+              </div>
+              <div style={{ marginBottom: "1rem" }}>
+                <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.4rem" }}>Weight (kg)</div>
+                <input type="number" placeholder="80" value={data.weight} onChange={e => update("weight", parseFloat(e.target.value) || "")}
+                  style={{ width: "100%", background: T.s2, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "0.7rem 1rem", color: T.text, fontSize: "0.95rem", outline: "none", fontFamily: "inherit", WebkitAppearance: "none" }} />
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.4rem" }}>Any notes for your trainer? (optional)</div>
+              <textarea placeholder="e.g. Bad left knee, want to focus on upper body, training for a sport..." value={data.notes} onChange={e => update("notes", e.target.value)}
+                style={{ width: "100%", background: T.s2, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "0.7rem 1rem", color: T.text, fontSize: "0.9rem", outline: "none", fontFamily: "inherit", resize: "none", height: 80 }} />
+            </div>
+          </>
+        )}
+
+        {step === 1 && (
+          <>
+            <div style={{ marginBottom: "1.5rem" }}>
+              <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.8rem" }}>Experience Level</div>
+              {EXPERIENCE_OPTIONS.map(e => (
+                <div key={e.id} onClick={() => update("experience", e.id)}
+                  style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "0.9rem 1rem", borderRadius: 10, border: `1.5px solid ${data.experience === e.id ? T.accent : T.border}`, background: data.experience === e.id ? T.accentDim : T.s1, marginBottom: "0.5rem", cursor: "pointer" }}>
+                  <span style={{ fontSize: "1.3rem" }}>{e.icon}</span>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: "0.95rem" }}>{e.label}</div>
+                    <div style={{ fontSize: "0.78rem", color: T.text2 }}>{e.desc}</div>
+                  </div>
+                  {data.experience === e.id && <span style={{ marginLeft: "auto", color: T.accent, fontSize: "1.1rem" }}>✓</span>}
+                </div>
+              ))}
+            </div>
+            <div>
+              <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.8rem" }}>Primary Goal</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem" }}>
+                {GOAL_OPTIONS.map(g => (
+                  <div key={g.id} onClick={() => update("goal", g.id)}
+                    style={{ padding: "0.9rem", borderRadius: 10, border: `1.5px solid ${data.goal === g.id ? g.color : T.border}`, background: data.goal === g.id ? g.color + "20" : T.s1, cursor: "pointer", textAlign: "center" }}>
+                    <div style={{ fontSize: "1.5rem", marginBottom: "0.3rem" }}>{g.icon}</div>
+                    <div style={{ fontWeight: 700, fontSize: "0.85rem", color: data.goal === g.id ? g.color : T.text }}>{g.label}</div>
+                    <div style={{ fontSize: "0.7rem", color: T.text2, marginTop: "0.2rem", lineHeight: 1.3 }}>{g.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+
+        {step === 2 && (
+          <>
+            <div style={{ fontSize: "0.85rem", color: T.text2, marginBottom: "1.2rem", lineHeight: 1.6 }}>Select everything you have access to. Your plan will use only this equipment.</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem" }}>
+              {EQUIPMENT_OPTIONS.map(e => {
+                const sel = data.equipment.includes(e.id);
+                return (
+                  <div key={e.id} onClick={() => toggleEquip(e.id)}
+                    style={{ display: "flex", alignItems: "center", gap: "0.6rem", padding: "0.75rem 0.9rem", borderRadius: 10, border: `1.5px solid ${sel ? T.green : T.border}`, background: sel ? T.greenDim : T.s1, cursor: "pointer" }}>
+                    <span style={{ fontSize: "1.1rem" }}>{e.icon}</span>
+                    <span style={{ fontSize: "0.82rem", fontWeight: sel ? 700 : 400, color: sel ? T.green : T.text2 }}>{e.label}</span>
+                    {sel && <span style={{ marginLeft: "auto", color: T.green, fontSize: "0.9rem" }}>✓</span>}
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+
+        {step === 3 && (
+          <>
+            <div style={{ marginBottom: "1.5rem" }}>
+              <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.8rem" }}>Days Per Week</div>
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                {DAYS_OPTIONS.map(d => (
+                  <div key={d} onClick={() => update("daysPerWeek", d)}
+                    style={{ flex: 1, textAlign: "center", padding: "0.8rem 0", borderRadius: 10, border: `1.5px solid ${data.daysPerWeek === d ? T.yellow : T.border}`, background: data.daysPerWeek === d ? T.yellowDim : T.s1, cursor: "pointer" }}>
+                    <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1.5rem", color: data.daysPerWeek === d ? T.yellow : T.text2 }}>{d}</div>
+                    <div style={{ fontSize: "0.6rem", color: T.text3, textTransform: "uppercase", letterSpacing: "0.1em" }}>days</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* SESSION DURATION */}
+            <div style={{ marginBottom: "1.5rem" }}>
+              <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.8rem" }}>Session Length</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem" }}>
+                {SESSION_DURATION_OPTIONS.map(opt => {
+                  const sel = data.sessionDuration === opt.id;
+                  return (
+                    <div key={opt.id} onClick={() => update("sessionDuration", opt.id)}
+                      style={{ padding: "0.85rem 0.9rem", borderRadius: 10, border: `1.5px solid ${sel ? T.green : T.border}`, background: sel ? T.greenDim : T.s1, cursor: "pointer" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.25rem" }}>
+                        <span style={{ fontSize: "1rem" }}>{opt.icon}</span>
+                        <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1rem", color: sel ? T.green : T.text }}>{opt.label}</span>
+                        {sel && <span style={{ marginLeft: "auto", color: T.green, fontSize: "0.85rem" }}>✓</span>}
+                      </div>
+                      <div style={{ fontSize: "0.72rem", color: T.text2, lineHeight: 1.4 }}>{opt.desc}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* REST PREFERENCE */}
+            <div style={{ marginBottom: "1.5rem" }}>
+              <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.4rem" }}>Rest Between Sets</div>
+              <div style={{ fontSize: "0.75rem", color: T.text3, marginBottom: "0.8rem" }}>Controls rest timers during workouts</div>
+              {REST_PREFS.map(opt => {
+                const sel = data.restPreference === opt.id;
+                return (
+                  <div key={opt.id} onClick={() => update("restPreference", opt.id)}
+                    style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "0.9rem 1rem", borderRadius: 10, border: `1.5px solid ${sel ? opt.color : T.border}`, background: sel ? opt.color + "18" : T.s1, marginBottom: "0.5rem", cursor: "pointer" }}>
+                    <span style={{ fontSize: "1.4rem", flexShrink: 0 }}>{opt.icon}</span>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <span style={{ fontWeight: 700, fontSize: "0.9rem", color: sel ? opt.color : T.text }}>{opt.label}</span>
+                        <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.78rem", color: sel ? opt.color : T.text3, background: sel ? opt.color + "22" : T.s3, padding: "0.1rem 0.45rem", borderRadius: 4 }}>{opt.desc}</span>
+                      </div>
+                      <div style={{ fontSize: "0.73rem", color: T.text2, marginTop: "0.2rem" }}>{opt.detail}</div>
+                    </div>
+                    {sel && <span style={{ color: opt.color, fontSize: "1.1rem", flexShrink: 0 }}>✓</span>}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div>
+              <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.8rem" }}>Training Split</div>
+              {SPLIT_OPTIONS.map(s => (
+                <div key={s.id} onClick={() => update("split", s.id)}
+                  style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "0.9rem 1rem", borderRadius: 10, border: `1.5px solid ${data.split === s.id ? T.yellow : T.border}`, background: data.split === s.id ? T.yellowDim : T.s1, marginBottom: "0.5rem", cursor: "pointer" }}>
+                  <span style={{ fontSize: "1.2rem" }}>{s.icon}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 700, fontSize: "0.9rem" }}>{s.full}</div>
+                    <div style={{ fontSize: "0.75rem", color: T.text2 }}>{s.desc}</div>
+                  </div>
+                  <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.75rem", textTransform: "uppercase", color: T.accent, background: T.accentDim, padding: "0.2rem 0.5rem", borderRadius: 4 }}>{s.label}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      <div style={{ padding: "1rem 1.5rem 1.5rem", borderTop: `1px solid ${T.border}`, background: T.s1, display: "flex", gap: "0.8rem" }}>
+        {step > 0 && (
+          <button onClick={() => setStep(s => s - 1)} style={{ ...btnStyle(T.s3), flex: 0.4, border: `1.5px solid ${T.border}`, color: T.text2 }}>← Back</button>
+        )}
+        <button onClick={() => step < steps.length - 1 ? setStep(s => s + 1) : onComplete(data)}
+          disabled={!canNext}
+          style={{ ...btnStyle(canNext ? T.accent : T.s3), flex: 1, opacity: canNext ? 1 : 0.5, color: canNext ? T.bg : T.text3 }}>
+          {step < steps.length - 1 ? "Continue →" : "Build My Plan ⚡"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── GENERATING ───────────────────────────────────────────────────────────────
+function Generating({ progress }) {
+  const dots = ["⚡", "🏋️", "📊", "💪", "🎯"];
+  const [dot, setDot] = useState(0);
+  useEffect(() => { const t = setInterval(() => setDot(d => (d + 1) % dots.length), 600); return () => clearInterval(t); }, []);
+  return (
+    <div style={{ background: T.bg, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem", textAlign: "center" }}>
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,255,136,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ fontSize: "3rem", marginBottom: "1.5rem", animation: "spin 2s linear infinite" }}>{dots[dot]}</div>
+      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", letterSpacing: "0.08em", letterSpacing: "0.08em", background: "linear-gradient(90deg, #00ff88, #00e5ff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: "1rem" }}>Building Your Plan</div>
+      <div style={{ fontSize: "0.85rem", color: T.text2, maxWidth: 280, lineHeight: 1.7 }}>{progress || "AI is designing your personalised 4-week programme..."}</div>
+      <div style={{ display: "flex", gap: "0.5rem", marginTop: "2rem" }}>
+        {[0, 1, 2].map(i => (
+          <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: "#00ff88", opacity: dot === i ? 1 : 0.2, transition: "opacity 0.3s" }} />
+        ))}
+      </div>
+      <style>{`@keyframes spin { 0%{transform:scale(1)} 50%{transform:scale(1.2)} 100%{transform:scale(1)} }`}</style>
+    </div>
+  );
+}
+
+// ─── PLAN HOME ────────────────────────────────────────────────────────────────
+function PlanHome({ profile, plan, sessionLogs, currentWeek, setCurrentWeek, onStartSession, onReview, onEditProfile }) {
+  const [view, setView] = useState("home");
+  const weekData = plan.weeks?.[currentWeek - 1];
+  const totalSessions = plan.weeks?.reduce((a, w) => a + (w.sessions?.length || 0), 0) || 0;
+  const doneSessions = Object.keys(sessionLogs).length;
+  const isWeek4Done = currentWeek === 4 && weekData?.sessions?.every(s => sessionLogs[`w4_${s.day}`]);
+
+  const dayColors = { Push: T.orange, Pull: T.green, Legs: T.accent, Upper: T.yellow, Lower: T.blue, "Full Body": T.pink };
+  const getColor = (type) => dayColors[type] || T.text2;
+
+  // Schedule view
+  const days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+  const dayAbbr = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+
+  if (view === "schedule") {
+    return (
+      <div style={appShell}>
+        <div style={topBar}>
+          <button onClick={() => setView("home")} style={backBtn}>← Plan</button>
+          <div style={topBarTitle}>Schedule</div>
+          <div />
+        </div>
+        <div style={{ flex: 1, overflowY: "auto", padding: "1.2rem" }}>
+          {days.map((d, i) => {
+            const type = plan.schedule?.[d] || "rest";
+            const isRest = type === "rest";
+            const c = isRest ? T.text3 : getColor(type);
+            return (
+              <div key={d} style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "0.9rem 1rem", borderRadius: 12, border: `1.5px solid ${isRest ? T.border : c + "44"}`, background: isRest ? T.s1 : c + "0f", marginBottom: "0.6rem" }}>
+                <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.75rem", color: T.text3, width: 32, textTransform: "uppercase", letterSpacing: "0.1em" }}>{dayAbbr[i]}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700, fontSize: "0.9rem", color: isRest ? T.text3 : c }}>{isRest ? "Rest / Recovery" : type}</div>
+                </div>
+                {!isRest && <div style={{ width: 10, height: 10, borderRadius: "50%", background: c }} />}
+              </div>
+            );
+          })}
+          <div style={{ background: T.s1, border: `1.5px solid ${T.border}`, borderRadius: 12, padding: "1rem", marginTop: "0.5rem" }}>
+            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.5rem" }}>Plan Overview</div>
+            <div style={{ fontSize: "0.85rem", color: T.text2, lineHeight: 1.7 }}>{plan.planSummary}</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={appShell}>
+      {/* TOP BAR */}
+      <div style={{ ...topBar, padding: "0.8rem 1.2rem", flexDirection: "column", alignItems: "flex-start", gap: "0.5rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", width: "100%", alignItems: "center" }}>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.3rem", letterSpacing: "0.1em", color: T.accent }}>PHANTOM FORGE</div>
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            <button onClick={() => setView("schedule")} style={{ background: T.s2, border: `1px solid ${T.border}`, borderRadius: 8, padding: "0.35rem 0.7rem", color: T.text2, fontSize: "0.72rem", fontWeight: 700, cursor: "pointer", textTransform: "uppercase", letterSpacing: "0.08em" }}>Schedule</button>
+            <button onClick={onSocial} style={{ background: friends?.filter(f=>f.status==="accepted").length > 0 ? T.greenDim : T.s2, border: `1px solid ${friends?.filter(f=>f.status==="pending_in").length > 0 ? T.yellow : friends?.filter(f=>f.status==="accepted").length > 0 ? T.green + "55" : T.border}`, borderRadius: 8, padding: "0.35rem 0.7rem", color: friends?.filter(f=>f.status==="pending_in").length > 0 ? T.yellow : T.text2, fontSize: "0.72rem", fontWeight: 700, cursor: "pointer", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+              {friends?.filter(f=>f.status==="pending_in").length > 0 ? `👥 (${friends.filter(f=>f.status==="pending_in").length})` : "👥 Squad"}
+            </button>
+            <button onClick={onEditProfile} style={{ background: T.s2, border: `1px solid ${T.border}`, borderRadius: 8, padding: "0.35rem 0.7rem", color: T.text2, fontSize: "0.72rem", fontWeight: 700, cursor: "pointer", textTransform: "uppercase", letterSpacing: "0.08em" }}>Profile</button>
+          </div>
+        </div>
+        <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1.1rem", textTransform: "uppercase", letterSpacing: "0.05em", color: T.text, lineHeight: 1 }}>{plan.planName}</div>
+        <div style={{ fontSize: "0.75rem", color: T.text2 }}>{profile.name} · {profile.goal?.replace(/_/g," ")} · {profile.daysPerWeek}x/week</div>
+      </div>
+
+      {/* WEEK SELECTOR */}
+      <div style={{ display: "flex", gap: "0.5rem", padding: "0.8rem 1.2rem", background: T.s1, borderBottom: `1px solid ${T.border}` }}>
+        {[1, 2, 3, 4].map(w => {
+          const wSessions = plan.weeks?.[w - 1]?.sessions || [];
+          const wDone = wSessions.every(s => sessionLogs[`w${w}_${s.day}`]);
+          return (
+            <div key={w} onClick={() => setCurrentWeek(w)}
+              style={{ flex: 1, textAlign: "center", padding: "0.6rem 0", borderRadius: 10, border: `1.5px solid ${currentWeek === w ? T.accent : wDone ? T.green + "55" : T.border}`, background: currentWeek === w ? T.accentDim : wDone ? T.greenDim : T.s2, cursor: "pointer" }}>
+              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1.1rem", color: currentWeek === w ? T.accent : wDone ? T.green : T.text3 }}>W{w}</div>
+              <div style={{ fontSize: "0.55rem", textTransform: "uppercase", letterSpacing: "0.1em", color: wDone ? T.green : T.text3 }}>{wDone ? "done" : "week " + w}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* CONTENT */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "1rem 1.2rem 5rem" }}>
+
+        {/* Week banner */}
+        <div style={{ background: `linear-gradient(135deg, ${T.accent}1a, ${T.blue}0f)`, border: `1px solid ${T.accent}33`, borderRadius: 12, padding: "0.9rem 1.1rem", marginBottom: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.15em", color: T.accent, marginBottom: "0.2rem" }}>Week {currentWeek} Focus</div>
+            <div style={{ fontSize: "0.85rem", color: T.text, fontWeight: 500 }}>{weekData?.focus || plan.weeklyFocus?.[currentWeek - 1] || "Progressive training"}</div>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1.6rem", color: T.accent, lineHeight: 1 }}>{weekData?.sessions?.filter(s => sessionLogs[`w${currentWeek}_${s.day}`]).length || 0}/{weekData?.sessions?.length || 0}</div>
+            <div style={{ fontSize: "0.6rem", textTransform: "uppercase", letterSpacing: "0.1em", color: T.text3 }}>sessions done</div>
+          </div>
+        </div>
+
+        {/* Progress bar */}
+        <div style={{ marginBottom: "1.2rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.68rem", color: T.text3, marginBottom: "0.4rem", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700 }}>
+            <span>4-Week Progress</span><span>{doneSessions}/{totalSessions} sessions</span>
+          </div>
+          <div style={{ height: 6, background: T.s3, borderRadius: 3, overflow: "hidden" }}>
+            <div style={{ height: "100%", width: `${totalSessions ? (doneSessions / totalSessions * 100) : 0}%`, background: "linear-gradient(90deg, #00ff88, #00e5ff)", borderRadius: 3, transition: "width 0.5s ease" }} />
+          </div>
+        </div>
+
+        {/* Sessions */}
+        {(weekData?.sessions || []).map((session, si) => {
+          const logKey = `w${currentWeek}_${session.day}`;
+          const done = !!sessionLogs[logKey];
+          const c = getColor(session.type);
+          return (
+            <div key={si} style={{ background: T.s1, border: `1.5px solid ${done ? T.green + "60" : c + "33"}`, borderRadius: 14, padding: "1rem", marginBottom: "0.7rem", opacity: done ? 0.75 : 1 }}>
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "0.7rem" }}>
+                <div>
+                  <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1.1rem", textTransform: "uppercase", letterSpacing: "0.05em", color: c }}>{session.day} — {session.type}</div>
+                  <div style={{ fontSize: "0.75rem", color: T.text2, marginTop: "0.1rem" }}>{session.duration} · {session.exercises?.length || 0} exercises</div>
+                </div>
+                {done ? (
+                  <div style={{ background: T.greenDim, border: `1px solid ${T.green}55`, borderRadius: 8, padding: "0.35rem 0.7rem", fontSize: "0.72rem", fontWeight: 700, color: T.green }}>✓ Done</div>
+                ) : (
+                  <button onClick={() => onStartSession(session, currentWeek)}
+                    style={{ background: c, border: "none", borderRadius: 8, padding: "0.4rem 0.9rem", fontSize: "0.78rem", fontWeight: 900, color: T.bg, cursor: "pointer", fontFamily: "'Barlow Condensed', sans-serif", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                    Start →
+                  </button>
+                )}
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
+                {(session.exercises || []).slice(0, 5).map((ex, ei) => (
+                  <span key={ei} style={{ fontSize: "0.7rem", color: T.text3, background: T.s2, borderRadius: 6, padding: "0.2rem 0.5rem" }}>{ex.name}</span>
+                ))}
+                {(session.exercises || []).length > 5 && <span style={{ fontSize: "0.7rem", color: T.text3 }}>+{(session.exercises || []).length - 5} more</span>}
+              </div>
+            </div>
+          );
+        })}
+
+        {/* Weekly check-in photo button */}
+        <div style={{ background: "linear-gradient(135deg, rgba(0,229,255,0.06), rgba(0,255,136,0.04))", border: `1px solid ${T.accent}22`, borderRadius: 12, padding: "0.8rem 1rem", marginBottom: "0.7rem", display: "flex", alignItems: "center", gap: "0.8rem" }}>
+          <span style={{ fontSize: "1.2rem", flexShrink: 0 }}>📸</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.12em", color: T.accent, marginBottom: "0.1rem" }}>Week {currentWeek} Check-In</div>
+            <div style={{ fontSize: "0.75rem", color: T.text2 }}>Upload a photo for AI body comp analysis</div>
+          </div>
+          <button onClick={onPhotoCheckIn} style={{ background: T.accentDim, border: `1px solid ${T.accent}44`, borderRadius: 8, padding: "0.4rem 0.8rem", fontSize: "0.75rem", fontWeight: 900, color: T.accent, cursor: "pointer", fontFamily: "'Barlow Condensed', sans-serif", textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap" }}>
+            📸 Add
+          </button>
+        </div>
+
+        {isWeek4Done && (
+          <div style={{ background: `linear-gradient(135deg, ${T.green}0f, ${T.accent}08)`, border: `1.5px solid ${T.green}44`, borderRadius: 14, padding: "1.2rem", marginTop: "0.5rem", textAlign: "center" }}>
+            <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>🏆</div>
+            <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1.3rem", textTransform: "uppercase", letterSpacing: "0.08em", color: T.green, marginBottom: "0.4rem" }}>4 Weeks Complete!</div>
+            <div style={{ fontSize: "0.82rem", color: T.text2, marginBottom: "1rem", lineHeight: 1.6 }}>Time to review your progress and build the next plan.</div>
+            <button onClick={onReview} style={{ ...btnStyle(T.green), width: "100%", padding: "0.85rem", color: T.bg }}>Review Progress & Build Week 5–8 →</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── WORKOUT SESSION ──────────────────────────────────────────────────────────
+function WorkoutSession({ session, weekIdx, existingLog, onComplete, onBack, profile }) {
+  // Resolve rest seconds based on user's preference, capped at their chosen max
+  const restPref = REST_PREFS.find(r => r.id === (profile?.restPreference || "medium")) || REST_PREFS[1];
+  function getRestSecs(ex) {
+    // Use the AI-assigned restSeconds but cap it at the user's preferred maximum
+    const typeMap = { pump: restPref.seconds.pump, strength: restPref.seconds.strength, hypertrophy: restPref.seconds.hypertrophy };
+    const prefSecs = typeMap[ex.type] ?? restPref.seconds.hypertrophy;
+    // If AI gave a value, take the lower of AI value and user pref (user preference wins)
+    const aiSecs = ex.restSeconds || prefSecs;
+    return Math.min(aiSecs, restPref.seconds.strength);
+  }
+  const [sets, setSets] = useState(() => {
+    const init = {};
+    (session.exercises || []).forEach((ex, ei) => {
+      init[ei] = Array.from({ length: ex.sets }, (_, si) => ({
+        weight: existingLog?.[ei]?.[si]?.weight || ex.targetWeight || 0,
+        reps: existingLog?.[ei]?.[si]?.reps || parseInt(String(ex.reps).split("-")[0]) || 10,
+        logged: existingLog?.[ei]?.[si]?.logged || false,
+      }));
+    });
+    return init;
+  });
+  const [openEx, setOpenEx] = useState(0);
+  const [restSecs, setRestSecs] = useState(0);
+  const [restLabel, setRestLabel] = useState("");
+  const [showRest, setShowRest] = useState(false);
+  const [restTotal, setRestTotal] = useState(0);
+  const [startTime] = useState(Date.now());
+  const restRef = useRef(null);
+
+  useEffect(() => {
+    if (showRest && restSecs > 0) {
+      restRef.current = setInterval(() => setRestSecs(s => {
+        if (s <= 1) { clearInterval(restRef.current); setShowRest(false); if (navigator.vibrate) navigator.vibrate([200, 100, 200]); return 0; }
+        return s - 1;
+      }), 1000);
+    } else clearInterval(restRef.current);
+    return () => clearInterval(restRef.current);
+  }, [showRest, restSecs]);
+
+  function logSet(ei, si) {
+    const w = parseFloat(document.getElementById(`fw${ei}-${si}`)?.value) || 0;
+    const r = parseInt(document.getElementById(`fr${ei}-${si}`)?.value) || 0;
+    setSets(prev => {
+      const n = { ...prev };
+      n[ei] = [...n[ei]];
+      n[ei][si] = { weight: w, reps: r, logged: true };
+      if (si + 1 < n[ei].length) { n[ei][si + 1] = { ...n[ei][si + 1], weight: w, reps: r }; }
+      return n;
+    });
+    const ex = session.exercises[ei];
+    const hasMore = si < ex.sets - 1;
+    if (hasMore) {
+      const secs = getRestSecs(ex);
+      setRestTotal(secs); setRestSecs(secs);
+      setRestLabel(`Set ${si + 2} of ${ex.name}`);
+      setShowRest(true);
+    }
+  }
+
+  const totalSets = Object.values(sets).flat().length;
+  const doneSets = Object.values(sets).flat().filter(s => s.logged).length;
+  const pct = totalSets ? (doneSets / totalSets * 100) : 0;
+  const allDone = doneSets === totalSets;
+  const c = session.color || T.accent;
+
+  function handleFinish() {
+    const elapsed = Math.round((Date.now() - startTime) / 60000);
+    let totalVol = 0;
+    Object.values(sets).flat().forEach(s => { if (s.logged) totalVol += s.weight * s.reps; });
+    onComplete({ sets, elapsed, totalVol, date: new Date().toISOString() });
+  }
+
+  return (
+    <div style={appShell}>
+      <div style={{ ...topBar, gap: "0.8rem" }}>
+        <button onClick={onBack} style={backBtn}>← Back</button>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1rem", textTransform: "uppercase", letterSpacing: "0.05em", color: c }}>{session.type}</div>
+          <div style={{ fontSize: "0.7rem", color: T.text2 }}>{session.day} · {session.duration}</div>
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1.3rem", color: c }}>{doneSets}/{totalSets}</div>
+          <div style={{ fontSize: "0.58rem", textTransform: "uppercase", letterSpacing: "0.1em", color: T.text3 }}>sets</div>
+        </div>
+      </div>
+
+      {/* Progress */}
+      <div style={{ padding: "0 1.2rem 0.8rem", background: T.s1, borderBottom: `1px solid ${T.border}` }}>
+        <div style={{ height: 5, background: T.s3, borderRadius: 3, overflow: "hidden" }}>
+          <div style={{ height: "100%", width: `${pct}%`, background: c, borderRadius: 3, transition: "width 0.4s" }} />
+        </div>
+      </div>
+
+      <div style={{ flex: 1, overflowY: "auto", padding: "0.8rem 1.2rem 6rem" }}>
+        {session.warmup && (
+          <div style={{ background: T.s2, borderRadius: 10, padding: "0.7rem 1rem", marginBottom: "0.8rem", fontSize: "0.8rem", color: T.text2, borderLeft: `3px solid ${T.yellow}` }}>
+            🔥 Warmup: {session.warmup}
+          </div>
+        )}
+
+        {(session.exercises || []).map((ex, ei) => {
+          const exSets = sets[ei] || [];
+          const exDone = exSets.every(s => s.logged);
+          const isOpen = openEx === ei;
+          const isPump = ex.type === "pump";
+          const exColor = isPump ? T.pink : c;
+
+          return (
+            <div key={ei} style={{ background: T.s1, border: `1.5px solid ${exDone ? T.green + "55" : isPump ? T.pink + "33" : T.border}`, borderRadius: 14, marginBottom: "0.7rem", overflow: "hidden", opacity: exDone ? 0.78 : 1 }}>
+              <div onClick={() => setOpenEx(isOpen ? null : ei)} style={{ display: "flex", alignItems: "center", gap: "0.8rem", padding: "0.85rem 1rem", cursor: "pointer", userSelect: "none" }}>
+                <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.95rem", color: isPump ? T.pink : T.text3, minWidth: 22 }}>{String(ei + 1).padStart(2, "0")}</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700, fontSize: "0.9rem" }}>{ex.name}</div>
+                  <div style={{ fontSize: "0.7rem", color: T.text2, marginTop: 2 }}>
+                    <span style={{ color: isPump ? T.pink : exColor, fontWeight: 700, textTransform: "uppercase", fontSize: "0.65rem" }}>{ex.type}</span>
+                    {" · "}{ex.sets}×{ex.reps}{ex.targetWeight > 0 ? <span style={{ color: T.yellow }}>{" · "}{ex.targetWeight}kg target</span> : ""}
+                  </div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1.1rem", color: exDone ? T.green : T.text3 }}>{exSets.filter(s => s.logged).length}/{ex.sets}</span>
+                  <span style={{ fontSize: "0.65rem", color: T.text3, marginLeft: 4, display: "inline-block", transform: isOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>▾</span>
+                </div>
+              </div>
+
+              {isOpen && (
+                <div style={{ padding: "0 1rem 1rem" }}>
+                  {ex.tip && <div style={{ fontSize: "0.73rem", color: T.text2, lineHeight: 1.5, background: T.s2, borderRadius: 8, padding: "0.55rem 0.75rem", marginBottom: "0.7rem", borderLeft: `3px solid ${exColor}` }}>💡 {ex.tip}</div>}
+                  {ex.targetWeight > 0 && (
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", background: T.yellowDim, border: `1px solid ${T.yellow}33`, borderRadius: 8, padding: "0.45rem 0.75rem", marginBottom: "0.7rem" }}>
+                      <span style={{ fontSize: "0.9rem" }}>🎯</span>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "0.6rem", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.15em", color: T.yellow }}>AI Target Weight</div>
+                        <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "0.95rem", fontWeight: 900, color: T.text }}>{ex.targetWeight}kg · {ex.reps} reps</div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div style={{ display: "grid", gridTemplateColumns: "28px 1fr 1fr 56px", gap: "0.4rem", padding: "0 0.2rem 0.35rem", fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: T.text3 }}>
+                    <span>SET</span><span>KG</span><span>REPS</span><span></span>
+                  </div>
+
+                  {exSets.map((set, si) => {
+                    const isDone = set.logged;
+                    const isNext = !isDone && exSets.slice(0, si).every(s => s.logged);
+                    return (
+                      <div key={si} style={{ display: "grid", gridTemplateColumns: "28px 1fr 1fr 56px", gap: "0.4rem", alignItems: "center", padding: "0.45rem 0.2rem", borderRadius: 8, background: isDone ? "rgba(34,211,160,0.07)" : isNext ? "rgba(255,201,77,0.05)" : "transparent" }}>
+                        <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.95rem", color: isDone ? T.green : T.text3, textAlign: "center" }}>{isDone ? "✓" : si + 1}</span>
+                        <input id={`fw${ei}-${si}`} type="number" step="2.5" min="0" max="200" defaultValue={set.weight} readOnly={isDone}
+                          style={{ background: T.s2, border: `1.5px solid ${isDone ? T.green + "66" : T.border}`, borderRadius: 8, padding: "0.42rem 0.4rem", color: T.text, textAlign: "center", width: "100%", outline: "none", fontFamily: "inherit", fontWeight: 700, fontSize: "0.88rem", WebkitAppearance: "none" }} />
+                        <input id={`fr${ei}-${si}`} type="number" step="1" min="0" max="100" defaultValue={set.reps} readOnly={isDone}
+                          style={{ background: T.s2, border: `1.5px solid ${isDone ? T.green + "66" : T.border}`, borderRadius: 8, padding: "0.42rem 0.4rem", color: T.text, textAlign: "center", width: "100%", outline: "none", fontFamily: "inherit", fontWeight: 700, fontSize: "0.88rem", WebkitAppearance: "none" }} />
+                        {isDone
+                          ? <button onClick={() => setSets(prev => { const n = { ...prev }; n[ei] = [...n[ei]]; n[ei][si] = { ...n[ei][si], logged: false }; return n; })} style={{ background: T.s3, border: "none", borderRadius: 8, padding: "0.42rem 0", color: T.text2, fontSize: "0.6rem", fontWeight: 900, cursor: "pointer", width: "100%", fontFamily: "inherit", textTransform: "uppercase" }}>UNDO</button>
+                          : <button onClick={() => logSet(ei, si)} style={{ background: isPump ? T.pink : exColor, border: "none", borderRadius: 8, padding: "0.42rem 0", color: T.bg, fontSize: "0.7rem", fontWeight: 900, cursor: "pointer", width: "100%", fontFamily: "'Barlow Condensed', sans-serif", textTransform: "uppercase" }}>LOG</button>}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+
+        {session.cooldown && (
+          <div style={{ background: T.s2, borderRadius: 10, padding: "0.7rem 1rem", marginTop: "0.5rem", fontSize: "0.8rem", color: T.text2, borderLeft: `3px solid ${T.blue}` }}>
+            🧊 Cooldown: {session.cooldown}
+          </div>
+        )}
+      </div>
+
+      {/* Bottom bar */}
+      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 500, background: T.s1, borderTop: `1px solid ${T.border}`, padding: "0.8rem 1.2rem 1rem", display: "flex", gap: "0.8rem", alignItems: "center" }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ height: 5, background: T.s3, borderRadius: 3, overflow: "hidden" }}>
+            <div style={{ height: "100%", width: `${pct}%`, background: c, borderRadius: 3, transition: "width 0.4s" }} />
+          </div>
+        </div>
+        <button onClick={handleFinish} disabled={!allDone} style={{ ...btnStyle(allDone ? T.green : T.s3), opacity: allDone ? 1 : 0.5, color: allDone ? T.bg : T.text3, padding: "0.6rem 1.2rem", fontSize: "0.8rem", whiteSpace: "nowrap" }}>
+          Finish ✓
+        </button>
+      </div>
+
+      {/* Rest Overlay */}
+      {showRest && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(8,9,16,0.96)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
+          <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.2em", color: T.text3, marginBottom: "0.3rem" }}>Rest Period</div>
+          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.15em", color: restPref.color, marginBottom: "0.8rem", background: restPref.color + "18", padding: "0.2rem 0.6rem", borderRadius: 20, border: `1px solid ${restPref.color}44` }}>
+            {restPref.icon} {restPref.label} — max {restPref.seconds.strength}s
+          </div>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "5.5rem", letterSpacing: "0.05em", lineHeight: 1, color: restSecs <= 10 ? T.red : restSecs <= Math.floor(restTotal * 0.4) ? T.yellow : T.text }}>
+            {Math.floor(restSecs / 60)}:{String(restSecs % 60).padStart(2, "0")}
+          </div>
+          <div style={{ fontSize: "0.78rem", color: T.text2, marginTop: "0.4rem" }}>Next: {restLabel}</div>
+          <div style={{ width: 200, height: 5, background: T.s3, borderRadius: 3, marginTop: "1.2rem", overflow: "hidden" }}>
+            <div style={{ height: "100%", width: `${restTotal ? (restSecs / restTotal * 100) : 0}%`, background: restSecs <= Math.floor(restTotal * 0.4) ? T.yellow : restPref.color, borderRadius: 3, transition: "width 1s linear" }} />
+          </div>
+          <div style={{ display: "flex", gap: "0.8rem", marginTop: "1.8rem" }}>
+            <button onClick={() => { setRestSecs(s => s + 15); setRestTotal(t => t + 15); }} style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.85rem", textTransform: "uppercase", padding: "0.65rem 1.2rem", borderRadius: 10, cursor: "pointer", background: T.s2, border: `1.5px solid ${T.border}`, color: T.text2 }}>+15s</button>
+            <button onClick={() => { setRestSecs(s => s + 30); setRestTotal(t => t + 30); }} style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.85rem", textTransform: "uppercase", padding: "0.65rem 1.2rem", borderRadius: 10, cursor: "pointer", background: T.s2, border: `1.5px solid ${T.border}`, color: T.text2 }}>+30s</button>
+            <button onClick={() => setShowRest(false)} style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.85rem", textTransform: "uppercase", padding: "0.65rem 1.4rem", borderRadius: 10, cursor: "pointer", background: T.s2, border: `1.5px solid ${T.border}`, color: T.text2 }}>Skip</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── REVIEWING ────────────────────────────────────────────────────────────────
+function Reviewing() {
+  const msgs = ["Analysing your session logs...", "Calculating strength gains...", "Identifying weak points...", "Building your report..."];
+  const [msg, setMsg] = useState(0);
+  useEffect(() => { const t = setInterval(() => setMsg(m => (m + 1) % msgs.length), 2000); return () => clearInterval(t); }, []);
+  return (
+    <div style={{ background: T.bg, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem", textAlign: "center" }}>
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,255,136,0.05) 0%, transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ fontSize: "3rem", marginBottom: "1.5rem" }}>📊</div>
+      <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2rem", letterSpacing: "0.08em", color: T.green, marginBottom: "1rem" }}>Reviewing Your Progress</div>
+      <div style={{ fontSize: "0.85rem", color: T.text2, maxWidth: 280, lineHeight: 1.7, minHeight: 50 }}>{msgs[msg]}</div>
+    </div>
+  );
+}
+
+// ─── REVIEW / PROGRESS REPORT ─────────────────────────────────────────────────
+function Review({ profile, reviewData, plan, onNextPlan }) {
+  const [selectedFocus, setSelectedFocus] = useState([]);
+  const [showProfileUpdate, setShowProfileUpdate] = useState(false);
+  const [newWeight, setNewWeight] = useState(profile.weight);
+
+  const toggle = (id) => setSelectedFocus(prev => prev.includes(id) ? prev.filter(x => x !== id) : prev.length < 3 ? [...prev, id] : prev);
+
+  if (showProfileUpdate) {
+    return (
+      <ProfileSetup
+        existingProfile={{ ...profile, weight: newWeight }}
+        onComplete={(updated) => onNextPlan(selectedFocus, updated)}
+      />
+    );
+  }
+
+  return (
+    <div style={appShell}>
+      <div style={{ ...topBar, flexDirection: "column", alignItems: "flex-start", padding: "1.2rem" }}>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.3rem", letterSpacing: "0.1em", color: T.green }}>4-WEEK REVIEW</div>
+        <div style={{ fontSize: "0.75rem", color: T.text2 }}>{plan.planName}</div>
+      </div>
+
+      <div style={{ flex: 1, overflowY: "auto", padding: "1.2rem 1.2rem 7rem" }}>
+        {/* Score */}
+        <div style={{ textAlign: "center", padding: "1.5rem", background: `linear-gradient(135deg, ${T.green}15, ${T.accent}0a)`, border: `1.5px solid ${T.green}44`, borderRadius: 16, marginBottom: "1.2rem" }}>
+          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "4rem", color: T.green, lineHeight: 1 }}>{reviewData.overallScore}</div>
+          <div style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.15em", color: T.text3, fontWeight: 700 }}>Overall Score</div>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.4rem", letterSpacing: "0.06em", color: T.text, marginTop: "0.5rem" }}>{reviewData.headline}</div>
+          <div style={{ fontSize: "0.82rem", color: T.text2, marginTop: "0.5rem", lineHeight: 1.6 }}>{reviewData.summary}</div>
+        </div>
+
+        {/* Stats */}
+        {reviewData.stats && (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.7rem", marginBottom: "1.2rem" }}>
+            {[
+              { label: "Sessions Done", value: reviewData.stats.sessionsCompleted, unit: "" },
+              { label: "Total Volume", value: (reviewData.stats.totalVolume / 1000).toFixed(1), unit: "tonnes" },
+              { label: "Avg Duration", value: reviewData.stats.avgSessionDuration, unit: "min" },
+              { label: "Strength Gain", value: reviewData.stats.estimatedStrengthGain, unit: "" },
+            ].map(({ label, value, unit }, i) => (
+              <div key={i} style={{ background: T.s1, border: `1px solid ${T.border}`, borderRadius: 12, padding: "0.9rem 1rem", textAlign: "center" }}>
+                <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1.8rem", color: T.accent, lineHeight: 1 }}>{value}<span style={{ fontSize: "0.9rem", color: T.text3 }}>{unit && " " + unit}</span></div>
+                <div style={{ fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.1em", color: T.text3, fontWeight: 700, marginTop: "0.2rem" }}>{label}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Muscle scores */}
+        {reviewData.muscleGroupScores && (
+          <div style={{ background: T.s1, border: `1px solid ${T.border}`, borderRadius: 12, padding: "1rem", marginBottom: "1.2rem" }}>
+            <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.8rem" }}>Muscle Group Scores</div>
+            {Object.entries(reviewData.muscleGroupScores).map(([muscle, score]) => (
+              <div key={muscle} style={{ marginBottom: "0.6rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", marginBottom: "0.25rem" }}>
+                  <span style={{ fontWeight: 600 }}>{muscle}</span>
+                  <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, color: score >= 80 ? T.green : score >= 65 ? T.yellow : T.red }}>{score}</span>
+                </div>
+                <div style={{ height: 5, background: T.s3, borderRadius: 3, overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: `${score}%`, background: score >= 80 ? T.green : score >= 65 ? T.yellow : T.red, borderRadius: 3, transition: "width 0.8s ease" }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Strengths */}
+        <div style={{ background: T.s1, border: `1px solid ${T.green}33`, borderRadius: 12, padding: "1rem", marginBottom: "0.8rem" }}>
+          <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.green, marginBottom: "0.7rem" }}>💪 Strengths</div>
+          {(reviewData.strengths || []).map((s, i) => (
+            <div key={i} style={{ fontSize: "0.83rem", color: T.text2, padding: "0.35rem 0", borderBottom: i < reviewData.strengths.length - 1 ? `1px solid ${T.border}` : "none", lineHeight: 1.5 }}>• {s}</div>
+          ))}
+        </div>
+
+        {/* Improvements */}
+        <div style={{ background: T.s1, border: `1px solid ${T.orange}33`, borderRadius: 12, padding: "1rem", marginBottom: "1.2rem" }}>
+          <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.orange, marginBottom: "0.7rem" }}>📈 Areas to Improve</div>
+          {(reviewData.improvements || []).map((s, i) => (
+            <div key={i} style={{ fontSize: "0.83rem", color: T.text2, padding: "0.35rem 0", borderBottom: i < reviewData.improvements.length - 1 ? `1px solid ${T.border}` : "none", lineHeight: 1.5 }}>• {s}</div>
+          ))}
+        </div>
+
+        {/* Next focus */}
+        <div style={{ marginBottom: "1.2rem" }}>
+          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1.1rem", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.4rem", color: T.text }}>What do you want to focus on next?</div>
+          <div style={{ fontSize: "0.78rem", color: T.text2, marginBottom: "0.9rem" }}>Pick up to 3 areas — these shape your next 4-week plan.</div>
+          {(reviewData.nextFocusOptions || []).map(opt => {
+            const sel = selectedFocus.includes(opt.id);
+            return (
+              <div key={opt.id} onClick={() => toggle(opt.id)}
+                style={{ display: "flex", alignItems: "center", gap: "0.8rem", padding: "0.85rem 1rem", borderRadius: 10, border: `1.5px solid ${sel ? T.accent : T.border}`, background: sel ? T.accentDim : T.s1, marginBottom: "0.5rem", cursor: "pointer" }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700, fontSize: "0.9rem", color: sel ? T.accent : T.text }}>{opt.label}</div>
+                  <div style={{ fontSize: "0.75rem", color: T.text2, marginTop: "0.15rem" }}>{opt.desc}</div>
+                </div>
+                {sel && <span style={{ color: T.accent, fontSize: "1.1rem" }}>✓</span>}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* New weight */}
+        <div style={{ background: T.s1, border: `1px solid ${T.border}`, borderRadius: 12, padding: "1rem", marginBottom: "1rem" }}>
+          <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.6rem" }}>Update your current weight before next plan</div>
+          <div style={{ display: "flex", gap: "0.8rem", alignItems: "center" }}>
+            <input type="number" value={newWeight} onChange={e => setNewWeight(parseFloat(e.target.value) || profile.weight)}
+              style={{ flex: 1, background: T.s2, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "0.65rem 1rem", color: T.text, fontSize: "1rem", outline: "none", fontFamily: "inherit", WebkitAppearance: "none" }} />
+            <span style={{ color: T.text2, fontSize: "0.85rem" }}>kg</span>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA */}
+      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 500, background: T.s1, borderTop: `1px solid ${T.border}`, padding: "1rem 1.2rem 1.2rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+        <button onClick={() => setShowProfileUpdate(true)}
+          style={{ background: "transparent", border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "0.65rem", fontSize: "0.8rem", color: T.text2, cursor: "pointer", fontFamily: "inherit" }}>
+          Update full profile first (recommended) →
+        </button>
+        <button onClick={() => onNextPlan(selectedFocus, { ...profile, weight: newWeight })} disabled={selectedFocus.length === 0}
+          style={{ ...btnStyle(selectedFocus.length ? T.accent : T.s3), opacity: selectedFocus.length ? 1 : 0.5, color: selectedFocus.length ? T.bg : T.text3, padding: "0.9rem", fontSize: "0.95rem" }}>
+          Build My Next Plan ⚡ ({selectedFocus.length} focus areas)
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
+// ─── PHOTO BODY COMP ANALYSIS ────────────────────────────────────────────────
+async function analyseProgressPhoto(imageBase64, profile, sessionLogs, weekNum) {
+  const totalVol = Object.values(sessionLogs).reduce((total, log) => {
+    if (!log?.sets) return total;
+    return total + Object.values(log.sets).flat().reduce((a, s) => a + (s.logged ? s.weight * s.reps : 0), 0);
+  }, 0);
+  const sessionsDone = Object.keys(sessionLogs).length;
+
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 1000,
+      system: `You are an expert body composition analyst. Analyse physique photos and provide estimates alongside provided biometric data. Always be encouraging. Respond ONLY with valid JSON, no markdown.`,
+      messages: [{
+        role: "user",
+        content: [
+          {
+            type: "image",
+            source: { type: "base64", media_type: "image/jpeg", data: imageBase64 }
+          },
+          {
+            type: "text",
+            text: `Analyse this progress photo combined with the training data below. Provide body composition estimates.
+
+Training data:
+- Age: ${profile.age}, Height: ${profile.height}cm, Current weight: ${profile.weight}kg
+- Experience: ${profile.experience}, Goal: ${profile.goal}
+- Week ${weekNum} of programme
+- Sessions completed this cycle: ${sessionsDone}
+- Total volume lifted this cycle: ${Math.round(totalVol).toLocaleString()}kg
+
+Return ONLY this JSON (no markdown, no explanation):
+{
+  "headline": "One short motivational assessment (max 8 words)",
+  "bodyFatPercent": 18.5,
+  "bodyFatKg": 14.8,
+  "bodyFatLbs": 32.6,
+  "leanMassKg": 67.2,
+  "leanMassLbs": 148.2,
+  "muscleMassKg": 57.8,
+  "muscleMassLbs": 127.4,
+  "confidence": "medium",
+  "confidenceNote": "Visual estimates have ±2-3% margin vs DEXA",
+  "visualAssessment": "2-3 sentences on what you can see — muscle development, fat distribution, posture, symmetry",
+  "weekProgress": "What this photo suggests about progress from training this week",
+  "recommendations": ["Specific recommendation 1", "Specific recommendation 2"],
+  "overallRating": 78,
+  "ratingLabel": "Athletic",
+  "trends": {
+    "upperBody": "developing",
+    "lowerBody": "strong",
+    "core": "progressing",
+    "overall": "positive"
+  }
+}`
+          }
+        ]
+      }]
+    })
+  });
+  if (!response.ok) throw new Error("API error");
+  const data = await response.json();
+  const text = data.content?.map(c => c.text || "").join("") || "";
+  const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+  return JSON.parse(cleaned);
+}
+
+// ─── PROGRESS PHOTO SCREEN ────────────────────────────────────────────────────
+function ProgressPhoto({ profile, sessionLogs, weekNum, existingPhotos, onSave, onBack }) {
+  const [imgData, setImgData] = useState(null);
+  const [imgPreview, setImgPreview] = useState(null);
+  const [analysing, setAnalysing] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+  const [unit, setUnit] = useState("kg");
+  const fileRef = useRef(null);
+
+  function handleFileSelect(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target.result;
+      setImgPreview(dataUrl);
+      // Extract base64 without prefix
+      const base64 = dataUrl.split(",")[1];
+      setImgData(base64);
+      setResult(null);
+      setError(null);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function handleAnalyse() {
+    if (!imgData) return;
+    setAnalysing(true);
+    setError(null);
+    try {
+      const res = await analyseProgressPhoto(imgData, profile, sessionLogs, weekNum);
+      setResult(res);
+    } catch (e) {
+      console.error(e);
+      setError("Analysis failed — please try again. Make sure your photo is clear and well-lit.");
+    }
+    setAnalysing(false);
+  }
+
+  function handleSave() {
+    if (!result) return;
+    onSave({ week: weekNum, date: new Date().toISOString(), imgPreview, result });
+  }
+
+  const trendIcon = (v) => v === "strong" || v === "positive" ? "↑" : v === "progressing" || v === "developing" ? "→" : "↓";
+  const trendColor = (v) => v === "strong" || v === "positive" ? T.accent : v === "progressing" || v === "developing" ? T.yellow : T.pink;
+
+  return (
+    <div style={appShell}>
+      <div style={{ ...topBar, flexDirection: "column", alignItems: "flex-start", padding: "0.9rem 1.2rem", gap: "0.5rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", width: "100%", alignItems: "center" }}>
+          <button onClick={onBack} style={backBtn}>← Back</button>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.1rem", letterSpacing: "0.15em", background: "linear-gradient(90deg, #00ff88, #00e5ff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>WEEK {weekNum} CHECK-IN</div>
+          <div style={{ width: 40 }} />
+        </div>
+        <div style={{ fontSize: "0.72rem", color: T.text3, letterSpacing: "0.08em" }}>AI body composition analysis</div>
+      </div>
+
+      <div style={{ flex: 1, overflowY: "auto", padding: "1rem 1.2rem 5rem" }}>
+
+        {/* Upload area */}
+        <div onClick={() => fileRef.current?.click()}
+          style={{ border: `1.5px dashed ${imgPreview ? T.accent : T.border}`, borderRadius: 14, padding: imgPreview ? 0 : "2.5rem 1rem", textAlign: "center", cursor: "pointer", marginBottom: "1rem", overflow: "hidden", background: imgPreview ? "transparent" : T.s1, transition: "border-color 0.2s" }}>
+          {imgPreview ? (
+            <img src={imgPreview} alt="Progress" style={{ width: "100%", display: "block", borderRadius: 12, maxHeight: 320, objectFit: "cover" }} />
+          ) : (
+            <>
+              <div style={{ fontSize: "2.5rem", marginBottom: "0.8rem" }}>📸</div>
+              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1rem", textTransform: "uppercase", letterSpacing: "0.1em", color: T.text2, marginBottom: "0.4rem" }}>Add Progress Photo</div>
+              <div style={{ fontSize: "0.78rem", color: T.text3, lineHeight: 1.6 }}>Tap to upload · Best in good lighting<br />Front or side view recommended</div>
+            </>
+          )}
+          <input ref={fileRef} type="file" accept="image/*" onChange={handleFileSelect} style={{ display: "none" }} capture="environment" />
+        </div>
+
+        {imgPreview && !result && (
+          <div style={{ display: "flex", gap: "0.6rem", marginBottom: "1rem" }}>
+            <button onClick={() => fileRef.current?.click()} style={{ flex: 0.4, background: T.s2, border: `1px solid ${T.border}`, borderRadius: 10, padding: "0.65rem", fontSize: "0.78rem", color: T.text2, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Change Photo</button>
+            <button onClick={handleAnalyse} disabled={analysing}
+              style={{ flex: 1, background: analysing ? T.s3 : "linear-gradient(90deg, #00ff88, #00e5ff)", border: "none", borderRadius: 10, padding: "0.65rem", fontSize: "0.88rem", fontWeight: 900, color: "#000", cursor: analysing ? "default" : "pointer", fontFamily: "'Barlow Condensed', sans-serif", textTransform: "uppercase", letterSpacing: "0.1em", opacity: analysing ? 0.7 : 1 }}>
+              {analysing ? "👁 Analysing..." : "⚡ Analyse with AI"}
+            </button>
+          </div>
+        )}
+
+        {error && (
+          <div style={{ background: T.pinkDim, border: `1px solid ${T.pink}44`, borderRadius: 10, padding: "0.8rem 1rem", fontSize: "0.82rem", color: T.pink, marginBottom: "1rem" }}>{error}</div>
+        )}
+
+        {analysing && (
+          <div style={{ background: T.s1, border: `1px solid ${T.border}`, borderRadius: 14, padding: "1.5rem", textAlign: "center", marginBottom: "1rem" }}>
+            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.3rem", letterSpacing: "0.08em", color: T.accent, marginBottom: "0.5rem" }}>Reading Your Physique...</div>
+            <div style={{ fontSize: "0.82rem", color: T.text2, lineHeight: 1.7 }}>
+              AI is analysing muscle definition,<br />fat distribution and body composition.<br />
+              <span style={{ color: T.text3, fontSize: "0.72rem" }}>This takes 5–10 seconds</span>
+            </div>
+          </div>
+        )}
+
+        {result && (
+          <>
+            {/* Score hero */}
+            <div style={{ background: "linear-gradient(135deg, #0a0a0a, #111111)", border: `1.5px solid ${T.accent}44`, borderRadius: 16, padding: "1.2rem", marginBottom: "1rem", textAlign: "center", boxShadow: `0 0 30px ${T.accent}12` }}>
+              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.2em", color: T.text3, marginBottom: "0.4rem" }}>AI ASSESSMENT · WEEK {weekNum}</div>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "3.5rem", color: T.text, lineHeight: 1 }}>{result.overallRating}</div>
+              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1rem", textTransform: "uppercase", letterSpacing: "0.1em", color: T.accent, marginBottom: "0.5rem" }}>{result.ratingLabel}</div>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.4rem", color: T.text, letterSpacing: "0.05em" }}>{result.headline}</div>
+            </div>
+
+            {/* Unit toggle */}
+            <div style={{ display: "flex", gap: "0.4rem", marginBottom: "1rem" }}>
+              {["kg", "lbs"].map(u => (
+                <button key={u} onClick={() => setUnit(u)} style={{ flex: 1, padding: "0.5rem", borderRadius: 8, border: `1.5px solid ${unit === u ? T.accent : T.border}`, background: unit === u ? T.accentDim : T.s1, color: unit === u ? T.accent : T.text3, fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.85rem", textTransform: "uppercase", cursor: "pointer" }}>{u.toUpperCase()}</button>
+              ))}
+            </div>
+
+            {/* Body comp grid */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.7rem", marginBottom: "1rem" }}>
+              {[
+                { label: "Body Fat", val: unit === "kg" ? `${result.bodyFatPercent}%` : `${result.bodyFatPercent}%`, sub: unit === "kg" ? `${result.bodyFatKg} kg` : `${result.bodyFatLbs} lbs`, color: T.pink, icon: "🔥" },
+                { label: "Lean Mass", val: unit === "kg" ? `${result.leanMassKg} kg` : `${result.leanMassLbs} lbs`, sub: "total lean tissue", color: T.cyan, icon: "💧" },
+                { label: "Muscle Mass", val: unit === "kg" ? `${result.muscleMassKg} kg` : `${result.muscleMassLbs} lbs`, sub: "skeletal muscle est.", color: T.accent, icon: "💪" },
+                { label: "Body Weight", val: unit === "kg" ? `${profile.weight} kg` : `${(profile.weight * 2.205).toFixed(1)} lbs`, sub: "from profile", color: T.silver, icon: "⚖️" },
+              ].map(({ label, val, sub, color, icon }) => (
+                <div key={label} style={{ background: T.s1, border: `1px solid ${T.border}`, borderRadius: 12, padding: "0.9rem 1rem" }}>
+                  <div style={{ fontSize: "0.68rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: T.text3, marginBottom: "0.4rem" }}>{icon} {label}</div>
+                  <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1.6rem", color, lineHeight: 1 }}>{val}</div>
+                  <div style={{ fontSize: "0.68rem", color: T.text3, marginTop: "0.2rem" }}>{sub}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Confidence */}
+            <div style={{ background: T.yellowDim, border: `1px solid ${T.yellow}33`, borderRadius: 10, padding: "0.7rem 1rem", marginBottom: "1rem", display: "flex", gap: "0.6rem", alignItems: "flex-start" }}>
+              <span style={{ fontSize: "0.9rem", flexShrink: 0 }}>⚠️</span>
+              <div>
+                <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.12em", color: T.yellow, marginBottom: "0.2rem" }}>Confidence: {result.confidence?.toUpperCase()}</div>
+                <div style={{ fontSize: "0.75rem", color: T.text2, lineHeight: 1.5 }}>{result.confidenceNote}</div>
+              </div>
+            </div>
+
+            {/* Visual assessment */}
+            <div style={{ background: T.s1, border: `1px solid ${T.border}`, borderRadius: 12, padding: "1rem", marginBottom: "0.8rem" }}>
+              <div style={{ fontSize: "0.68rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.6rem" }}>👁 Visual Assessment</div>
+              <div style={{ fontSize: "0.85rem", color: T.text2, lineHeight: 1.7 }}>{result.visualAssessment}</div>
+            </div>
+
+            {/* Week progress */}
+            <div style={{ background: T.accentDim, border: `1px solid ${T.accent}33`, borderRadius: 12, padding: "1rem", marginBottom: "0.8rem" }}>
+              <div style={{ fontSize: "0.68rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.accent, marginBottom: "0.6rem" }}>📈 Week {weekNum} Progress Signal</div>
+              <div style={{ fontSize: "0.85rem", color: T.text2, lineHeight: 1.7 }}>{result.weekProgress}</div>
+            </div>
+
+            {/* Trend indicators */}
+            {result.trends && (
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", marginBottom: "0.8rem" }}>
+                {Object.entries(result.trends).map(([area, val]) => (
+                  <div key={area} style={{ background: T.s1, border: `1px solid ${T.border}`, borderRadius: 10, padding: "0.6rem 0.8rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontSize: "0.75rem", color: T.text2, textTransform: "capitalize" }}>{area}</span>
+                    <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.85rem", color: trendColor(val) }}>{trendIcon(val)} {val}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Recommendations */}
+            {result.recommendations?.length > 0 && (
+              <div style={{ background: T.s1, border: `1px solid ${T.border}`, borderRadius: 12, padding: "1rem", marginBottom: "1rem" }}>
+                <div style={{ fontSize: "0.68rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.6rem" }}>⚡ Recommendations</div>
+                {result.recommendations.map((r, i) => (
+                  <div key={i} style={{ fontSize: "0.83rem", color: T.text2, padding: "0.35rem 0", borderBottom: i < result.recommendations.length - 1 ? `1px solid ${T.border}` : "none", lineHeight: 1.5 }}>• {r}</div>
+                ))}
+              </div>
+            )}
+
+            <button onClick={handleSave}
+              style={{ width: "100%", padding: "0.85rem", background: "linear-gradient(90deg, #00ff88, #00e5ff)", border: "none", borderRadius: 10, fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#000", cursor: "pointer", marginBottom: "0.6rem" }}>
+              Save to Progress Journal ✓
+            </button>
+            <button onClick={handleAnalyse}
+              style={{ width: "100%", padding: "0.65rem", background: "transparent", border: `1px solid ${T.border}`, borderRadius: 10, fontFamily: "inherit", fontSize: "0.78rem", color: T.text3, cursor: "pointer" }}>
+              Re-analyse
+            </button>
+          </>
+        )}
+
+        {/* Previous photos */}
+        {existingPhotos?.length > 0 && !result && (
+          <div style={{ marginTop: "1.2rem" }}>
+            <div style={{ fontSize: "0.68rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.8rem" }}>Previous Check-ins</div>
+            <div style={{ display: "flex", gap: "0.6rem", overflowX: "auto", paddingBottom: "0.4rem" }}>
+              {existingPhotos.map((p, i) => (
+                <div key={i} style={{ flexShrink: 0, width: 90 }}>
+                  <div style={{ width: 90, height: 90, borderRadius: 10, overflow: "hidden", border: `1px solid ${T.border}`, marginBottom: "0.3rem" }}>
+                    <img src={p.imgPreview} alt={`Week ${p.week}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  </div>
+                  <div style={{ fontSize: "0.65rem", color: T.text3, textAlign: "center" }}>Wk {p.week}</div>
+                  {p.result && <div style={{ fontSize: "0.65rem", color: T.accent, textAlign: "center", fontWeight: 700 }}>{p.result.bodyFatPercent}% BF</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── COMPETITION PROMPT ───────────────────────────────────────────────────────
+function buildCompPrompt(profile, friends) {
+  const allEquip = [...new Set([...profile.equipment, ...friends.flatMap(f => f.equipment || [])])];
+  const commonEquip = profile.equipment.filter(e => friends.every(f => (f.equipment || []).includes(e)));
+  const useEquip = commonEquip.length >= 2 ? commonEquip : allEquip.slice(0, 6);
+  return `Create a single Competition Day workout session for ${friends.length + 1} people to compete on.
+Equipment everyone has: ${useEquip.join(", ")}
+Participants: ${[profile.username, ...friends.map(f => f.username)].join(", ")}
+
+The workout must be:
+- Exactly the same for everyone so scores are comparable
+- 8-10 exercises using only shared equipment
+- Mix of strength and conditioning
+- Completable in 45-60 minutes
+- Scored by total volume (weight × reps) — heavier is better
+
+Return ONLY this JSON (no markdown):
+{
+  "name": "Competition Day: [creative name]",
+  "tagline": "One-liner battle cry",
+  "color": "#ff5e3a",
+  "duration": "50 min",
+  "exercises": [
+    {
+      "name": "Exercise Name",
+      "sets": 3,
+      "reps": "8-10",
+      "restSeconds": 75,
+      "targetWeight": 20,
+      "type": "strength",
+      "tip": "Form tip",
+      "muscles": "Target muscles",
+      "scoreable": true
+    }
+  ],
+  "scoringNote": "Brief explanation of how scores are calculated"
+}`;
+}
+
+// ─── SOCIAL SCREEN ────────────────────────────────────────────────────────────
+function Social({ profile, friends, compDay, onBack, onSendRequest, onAccept, onDecline, onStartComp, onJoinComp, tab, setTab }) {
+  const [searchVal, setSearchVal] = useState("");
+  const [searchResult, setSearchResult] = useState(null); // null | "found" | "notfound" | "sending" | "sent"
+  const [friendData, setFriendData] = useState({});
+  const [loadingComp, setLoadingComp] = useState(false);
+  const [compInvites, setCompInvites] = useState([]);
+  const [selectedForComp, setSelectedForComp] = useState([]);
+
+  const accepted = friends.filter(f => f.status === "accepted");
+  const pendingIn = friends.filter(f => f.status === "pending_in");
+  const pendingOut = friends.filter(f => f.status === "pending_out");
+
+  useEffect(() => {
+    // Load cycle data for accepted friends
+    accepted.forEach(async f => {
+      const data = await sharedGet(`cycle:${f.uid}`);
+      if (data) setFriendData(prev => ({ ...prev, [f.uid]: data }));
+    });
+    // Check comp invites
+    if (profile?.uid) {
+      sharedGet(`compinvite:${profile.uid}`).then(invs => {
+        if (invs?.length) setCompInvites(invs);
+      });
+    }
+  }, [friends]);
+
+  async function handleSearch() {
+    const uname = searchVal.toLowerCase().trim().replace("@","");
+    if (!uname || uname === profile.username) return;
+    if (friends.find(f => f.username === uname)) { setSearchResult("already"); return; }
+    setSearchResult("searching");
+    const result = await onSendRequest(uname);
+    setSearchResult(result.ok ? "sent" : "notfound");
+  }
+
+  function toggleCompSelect(uid) {
+    setSelectedForComp(prev => prev.includes(uid) ? prev.filter(x => x !== uid) : [...prev, uid]);
+  }
+
+  return (
+    <div style={appShell}>
+      <div style={{ ...topBar, flexDirection: "column", alignItems: "flex-start", padding: "0.9rem 1.2rem", gap: "0.8rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", width: "100%", alignItems: "center" }}>
+          <button onClick={onBack} style={backBtn}>← Plan</button>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.2rem", letterSpacing: "0.18em", background: "linear-gradient(90deg, #c0c0c0, #f0f0f0)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>SQUAD</div>
+          <div style={{ background: T.accentDim, border: `1px solid ${T.accent}44`, borderRadius: 20, padding: "0.2rem 0.7rem", fontSize: "0.7rem", fontWeight: 700, color: T.accent }}>@{profile?.username}</div>
+        </div>
+        {/* Tabs */}
+        <div style={{ display: "flex", gap: "0.4rem", width: "100%" }}>
+          {["friends","compete"].map(t => (
+            <button key={t} onClick={() => setTab(t)} style={{ flex: 1, padding: "0.5rem", borderRadius: 8, border: `1.5px solid ${tab === t ? T.accent : T.border}`, background: tab === t ? T.accentDim : T.s2, color: tab === t ? T.accent : T.text3, fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "0.82rem", textTransform: "uppercase", letterSpacing: "0.1em", cursor: "pointer" }}>
+              {t === "friends" ? `👥 Friends${pendingIn.length ? ` (${pendingIn.length})` : ""}` : "⚔️ Compete"}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ flex: 1, overflowY: "auto", padding: "1rem 1.2rem 5rem" }}>
+
+        {tab === "friends" && <>
+          {/* Search */}
+          <div style={{ marginBottom: "1.2rem" }}>
+            <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.6rem" }}>Add a Friend</div>
+            <div style={{ display: "flex", gap: "0.6rem" }}>
+              <div style={{ flex: 1, position: "relative" }}>
+                <span style={{ position: "absolute", left: "0.9rem", top: "50%", transform: "translateY(-50%)", color: T.accent, fontWeight: 700 }}>@</span>
+                <input value={searchVal} onChange={e => { setSearchVal(e.target.value); setSearchResult(null); }} onKeyDown={e => e.key === "Enter" && handleSearch()}
+                  placeholder="username" style={{ width: "100%", background: T.s2, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "0.65rem 1rem 0.65rem 2rem", color: T.text, fontSize: "0.9rem", outline: "none", fontFamily: "inherit" }} />
+              </div>
+              <button onClick={handleSearch} style={{ ...btnStyle(T.accent), padding: "0.65rem 1.1rem", color: T.bg, flexShrink: 0 }}>Find</button>
+            </div>
+            {searchResult === "searching" && <div style={{ fontSize: "0.78rem", color: T.text3, marginTop: "0.5rem" }}>Searching...</div>}
+            {searchResult === "sent" && <div style={{ fontSize: "0.78rem", color: T.green, marginTop: "0.5rem" }}>✓ Friend request sent!</div>}
+            {searchResult === "notfound" && <div style={{ fontSize: "0.78rem", color: T.red, marginTop: "0.5rem" }}>User not found — check the username</div>}
+            {searchResult === "already" && <div style={{ fontSize: "0.78rem", color: T.yellow, marginTop: "0.5rem" }}>Already in your squad</div>}
+          </div>
+
+          {/* Pending incoming */}
+          {pendingIn.length > 0 && (
+            <div style={{ marginBottom: "1.2rem" }}>
+              <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.yellow, marginBottom: "0.6rem" }}>⏳ Requests ({pendingIn.length})</div>
+              {pendingIn.map(f => (
+                <div key={f.uid} style={{ display: "flex", alignItems: "center", gap: "0.8rem", padding: "0.85rem 1rem", borderRadius: 12, border: `1.5px solid ${T.yellow}44`, background: T.yellowDim, marginBottom: "0.5rem" }}>
+                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: T.accent + "33", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Bebas Neue',sans-serif", fontSize: "1rem", color: T.accent }}>{f.name?.[0]?.toUpperCase() || "?"}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 700, fontSize: "0.88rem" }}>{f.name}</div>
+                    <div style={{ fontSize: "0.72rem", color: T.text3 }}>@{f.username}</div>
+                  </div>
+                  <button onClick={() => onAccept(f.uid)} style={{ ...btnStyle(T.green), padding: "0.4rem 0.8rem", fontSize: "0.75rem", color: T.bg }}>Accept</button>
+                  <button onClick={() => onDecline(f.uid)} style={{ background: "transparent", border: `1px solid ${T.border}`, borderRadius: 8, padding: "0.4rem 0.8rem", fontSize: "0.75rem", color: T.text3, cursor: "pointer", fontFamily: "inherit" }}>Decline</button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Pending outgoing */}
+          {pendingOut.length > 0 && (
+            <div style={{ marginBottom: "1.2rem" }}>
+              <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.6rem" }}>Sent Requests</div>
+              {pendingOut.map(f => (
+                <div key={f.uid} style={{ display: "flex", alignItems: "center", gap: "0.8rem", padding: "0.75rem 1rem", borderRadius: 12, border: `1.5px solid ${T.border}`, background: T.s1, marginBottom: "0.4rem" }}>
+                  <div style={{ width: 32, height: 32, borderRadius: "50%", background: T.s3, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.85rem", color: T.text3 }}>{f.name?.[0]?.toUpperCase() || "?"}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 600, fontSize: "0.85rem" }}>{f.name}</div>
+                    <div style={{ fontSize: "0.7rem", color: T.text3 }}>@{f.username} · Awaiting response</div>
+                  </div>
+                  <div style={{ fontSize: "0.7rem", color: T.text3 }}>⏳</div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Accepted friends */}
+          {accepted.length > 0 ? (
+            <div>
+              <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.6rem" }}>Your Squad ({accepted.length})</div>
+              {accepted.map(f => {
+                const fd = friendData[f.uid];
+                const pct = fd && fd.totalSessions ? Math.round((fd.sessionsThisCycle / fd.totalSessions) * 100) : 0;
+                return (
+                  <div key={f.uid} style={{ background: T.s1, border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "1rem", marginBottom: "0.7rem" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", marginBottom: fd ? "0.7rem" : 0 }}>
+                      <div style={{ width: 40, height: 40, borderRadius: "50%", background: T.green + "33", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.1rem", color: T.green }}>{f.name?.[0]?.toUpperCase() || "?"}</div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 700, fontSize: "0.9rem" }}>{f.name} <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontSize: "0.75rem", color: T.green, background: T.greenDim, padding: "0.1rem 0.4rem", borderRadius: 4 }}>✓ Squad</span></div>
+                        <div style={{ fontSize: "0.72rem", color: T.text3 }}>@{f.username}</div>
+                      </div>
+                    </div>
+                    {fd && (
+                      <div style={{ background: T.s2, borderRadius: 8, padding: "0.6rem 0.8rem" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", marginBottom: "0.4rem" }}>
+                          <span style={{ color: T.text2 }}>{fd.planName || "Active plan"}</span>
+                          <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, color: T.accent }}>{fd.sessionsThisCycle}/{fd.totalSessions} sessions</span>
+                        </div>
+                        <div style={{ height: 4, background: T.s3, borderRadius: 2, overflow: "hidden" }}>
+                          <div style={{ height: "100%", width: `${pct}%`, background: pct >= 80 ? T.green : pct >= 50 ? T.yellow : T.orange, borderRadius: 2 }} />
+                        </div>
+                        <div style={{ fontSize: "0.68rem", color: T.text3, marginTop: "0.3rem" }}>Last active: {fd.lastActive || "—"}</div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div style={{ textAlign: "center", padding: "2rem 1rem", color: T.text3 }}>
+              <div style={{ fontSize: "2.5rem", marginBottom: "0.8rem" }}>👥</div>
+              <div style={{ fontSize: "0.85rem" }}>No squad members yet.<br />Add friends by username to see their progress.</div>
+            </div>
+          )}
+        </>}
+
+        {tab === "compete" && <>
+          {/* Active comp invite notifications */}
+          {compInvites.length > 0 && (
+            <div style={{ marginBottom: "1.2rem" }}>
+              {compInvites.map((inv, i) => (
+                <div key={i} style={{ background: `linear-gradient(135deg, ${T.orange}18, ${T.red}0a)`, border: `1.5px solid ${T.orange}55`, borderRadius: 12, padding: "1rem", marginBottom: "0.6rem", display: "flex", alignItems: "center", gap: "0.8rem" }}>
+                  <div style={{ fontSize: "1.5rem" }}>⚔️</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: "0.9rem", textTransform: "uppercase", color: T.orange }}>Battle Invite!</div>
+                    <div style={{ fontSize: "0.78rem", color: T.text2 }}>@{inv.from} challenged you to {inv.name}</div>
+                  </div>
+                  <button onClick={() => onJoinComp(inv.compId)} style={{ ...btnStyle(T.orange), padding: "0.5rem 0.9rem", fontSize: "0.78rem", color: T.bg }}>Join ⚔️</button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Existing comp */}
+          {compDay && (
+            <div style={{ background: `linear-gradient(135deg, ${T.red}15, ${T.orange}0a)`, border: `1.5px solid ${T.red}44`, borderRadius: 12, padding: "1rem", marginBottom: "1.2rem" }}>
+              <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.12em", color: T.red, marginBottom: "0.3rem" }}>Active Battle</div>
+              <div style={{ fontWeight: 700, fontSize: "0.95rem", marginBottom: "0.2rem" }}>{compDay.session?.name}</div>
+              <div style={{ fontSize: "0.75rem", color: T.text2, marginBottom: "0.7rem" }}>{compDay.session?.tagline}</div>
+              <button onClick={() => onBack()} style={{ ...btnStyle(T.red), width: "100%", color: T.bg }}>Go to Competition →</button>
+            </div>
+          )}
+
+          {/* Start new comp */}
+          {accepted.length > 0 ? (
+            <div>
+              <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3, marginBottom: "0.4rem" }}>Start a New Battle</div>
+              <div style={{ fontSize: "0.8rem", color: T.text2, marginBottom: "0.9rem", lineHeight: 1.6 }}>Select squad members to compete against. FitForge generates a standardised workout you all complete — highest volume wins. 🏆</div>
+              {accepted.map(f => {
+                const sel = selectedForComp.includes(f.uid);
+                return (
+                  <div key={f.uid} onClick={() => toggleCompSelect(f.uid)}
+                    style={{ display: "flex", alignItems: "center", gap: "0.8rem", padding: "0.85rem 1rem", borderRadius: 12, border: `1.5px solid ${sel ? T.orange : T.border}`, background: sel ? T.orangeDim : T.s1, marginBottom: "0.5rem", cursor: "pointer" }}>
+                    <div style={{ width: 36, height: 36, borderRadius: "50%", background: sel ? T.orange + "33" : T.s3, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Bebas Neue',sans-serif", fontSize: "1rem", color: sel ? T.orange : T.text3 }}>{f.name?.[0]?.toUpperCase()}</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 700, fontSize: "0.88rem", color: sel ? T.orange : T.text }}>{f.name}</div>
+                      <div style={{ fontSize: "0.72rem", color: T.text3 }}>@{f.username}</div>
+                    </div>
+                    <div style={{ width: 22, height: 22, borderRadius: "50%", border: `2px solid ${sel ? T.orange : T.border}`, background: sel ? T.orange : "transparent", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.8rem", color: T.bg }}>{sel ? "✓" : ""}</div>
+                  </div>
+                );
+              })}
+              {selectedForComp.length > 0 && (
+                <button onClick={async () => {
+                  setLoadingComp(true);
+                  await onStartComp(accepted.filter(f => selectedForComp.includes(f.uid)));
+                  setLoadingComp(false);
+                }} style={{ ...btnStyle(T.orange), width: "100%", padding: "0.9rem", marginTop: "0.5rem", color: T.bg, opacity: loadingComp ? 0.6 : 1 }}>
+                  {loadingComp ? "Generating Battle..." : `⚔️ Start Battle with ${selectedForComp.length} opponent${selectedForComp.length > 1 ? "s" : ""}`}
+                </button>
+              )}
+            </div>
+          ) : (
+            <div style={{ textAlign: "center", padding: "2rem 1rem", color: T.text3 }}>
+              <div style={{ fontSize: "2.5rem", marginBottom: "0.8rem" }}>⚔️</div>
+              <div style={{ fontSize: "0.85rem" }}>Add friends first to start a competition.</div>
+            </div>
+          )}
+        </>}
+      </div>
+    </div>
+  );
+}
+
+// ─── COMPETITION DAY SESSION ──────────────────────────────────────────────────
+function CompDay({ profile, compDay, friends, compScores, onBack, onComplete }) {
+  const session = compDay?.session;
+  const c = session?.color || T.orange;
+
+  const [sets, setSets] = useState(() => {
+    const init = {};
+    (session?.exercises || []).forEach((ex, ei) => {
+      init[ei] = Array.from({ length: ex.sets }, () => ({ weight: ex.targetWeight || 0, reps: parseInt(String(ex.reps).split("-")[0]) || 10, logged: false }));
+    });
+    return init;
+  });
+  const [openEx, setOpenEx] = useState(0);
+  const [restSecs, setRestSecs] = useState(0);
+  const [restTotal, setRestTotal] = useState(0);
+  const [showRest, setShowRest] = useState(false);
+  const [startTime] = useState(Date.now());
+  const restRef = useRef(null);
+
+  useEffect(() => {
+    if (showRest && restSecs > 0) {
+      restRef.current = setInterval(() => setRestSecs(s => {
+        if (s <= 1) { clearInterval(restRef.current); setShowRest(false); if (navigator.vibrate) navigator.vibrate([200, 100, 200]); return 0; }
+        return s - 1;
+      }), 1000);
+    } else clearInterval(restRef.current);
+    return () => clearInterval(restRef.current);
+  }, [showRest, restSecs]);
+
+  function logSet(ei, si) {
+    const w = parseFloat(document.getElementById(`cw${ei}-${si}`)?.value) || 0;
+    const r = parseInt(document.getElementById(`cr${ei}-${si}`)?.value) || 0;
+    setSets(prev => {
+      const n = { ...prev };
+      n[ei] = [...n[ei]];
+      n[ei][si] = { weight: w, reps: r, logged: true };
+      if (si + 1 < n[ei].length) n[ei][si + 1] = { ...n[ei][si + 1], weight: w, reps: r };
+      return n;
+    });
+    const ex = session.exercises[ei];
+    const hasMore = si < ex.sets - 1;
+    if (hasMore) { setRestTotal(ex.restSeconds || 75); setRestSecs(ex.restSeconds || 75); setShowRest(true); }
+  }
+
+  const totalSets = Object.values(sets).flat().length;
+  const doneSets = Object.values(sets).flat().filter(s => s.logged).length;
+  const pct = totalSets ? (doneSets / totalSets * 100) : 0;
+  const allDone = doneSets === totalSets;
+  let liveVol = 0;
+  Object.values(sets).flat().forEach(s => { if (s.logged) liveVol += s.weight * s.reps; });
+
+  // Live leaderboard while doing comp
+  const participants = [
+    { uid: profile.uid, username: profile.username, name: profile.name, score: liveVol, isMe: true },
+    ...Object.values(compScores).filter(s => s.uid !== profile.uid).map(s => ({ ...s, isMe: false }))
+  ].sort((a, b) => b.score - a.score);
+
+  if (!session) return <div style={appShell}><div style={topBar}><button onClick={onBack} style={backBtn}>← Back</button></div><div style={{ padding: "2rem", textAlign: "center", color: T.text3 }}>No competition session found.</div></div>;
+
+  return (
+    <div style={appShell}>
+      <div style={{ background: `linear-gradient(135deg, ${c}22, ${T.s1})`, padding: "1rem 1.2rem", borderBottom: `1px solid ${c}33`, flexShrink: 0 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div>
+            <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.18em", color: c, marginBottom: "0.2rem" }}>⚔️ Competition Day</div>
+            <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.8rem", letterSpacing: "0.06em", lineHeight: 1, color: T.text }}>{session.name}</div>
+            <div style={{ fontSize: "0.75rem", color: T.text2, marginTop: "0.2rem", fontStyle: "italic" }}>{session.tagline}</div>
+          </div>
+          <button onClick={onBack} style={{ ...backBtn, color: T.text3 }}>← Back</button>
+        </div>
+        {/* Mini leaderboard */}
+        <div style={{ marginTop: "0.8rem", display: "flex", gap: "0.4rem", overflowX: "auto" }}>
+          {participants.map((p, i) => (
+            <div key={p.uid} style={{ flexShrink: 0, textAlign: "center", background: p.isMe ? c + "22" : T.s2, border: `1px solid ${p.isMe ? c : T.border}`, borderRadius: 8, padding: "0.4rem 0.6rem", minWidth: 60 }}>
+              <div style={{ fontSize: "0.65rem", color: i === 0 ? T.yellow : T.text3, fontWeight: 900 }}>{i === 0 ? "🥇" : `#${i + 1}`}</div>
+              <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: "0.75rem", color: p.isMe ? c : T.text2 }}>@{p.username}</div>
+              <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: "1rem", color: p.isMe ? c : T.text }}>{p.score.toLocaleString()}</div>
+              <div style={{ fontSize: "0.55rem", color: T.text3 }}>pts</div>
+            </div>
+          ))}
+        </div>
+        {/* Progress */}
+        <div style={{ marginTop: "0.7rem", height: 4, background: T.s3, borderRadius: 2, overflow: "hidden" }}>
+          <div style={{ height: "100%", width: `${pct}%`, background: c, borderRadius: 2, transition: "width 0.4s" }} />
+        </div>
+      </div>
+
+      <div style={{ flex: 1, overflowY: "auto", padding: "0.8rem 1.2rem 6rem" }}>
+        {(session.exercises || []).map((ex, ei) => {
+          const exSets = sets[ei] || [];
+          const exDone = exSets.every(s => s.logged);
+          const isOpen = openEx === ei;
+          return (
+            <div key={ei} style={{ background: T.s1, border: `1.5px solid ${exDone ? T.green + "55" : c + "22"}`, borderRadius: 14, marginBottom: "0.7rem", overflow: "hidden", opacity: exDone ? 0.78 : 1 }}>
+              <div onClick={() => setOpenEx(isOpen ? null : ei)} style={{ display: "flex", alignItems: "center", gap: "0.8rem", padding: "0.85rem 1rem", cursor: "pointer", userSelect: "none" }}>
+                <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: "0.95rem", color: c, minWidth: 22 }}>{String(ei + 1).padStart(2, "0")}</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700, fontSize: "0.9rem" }}>{ex.name}</div>
+                  <div style={{ fontSize: "0.7rem", color: T.text2, marginTop: 2 }}>{ex.sets}×{ex.reps} · <span style={{ color: T.yellow }}>{ex.targetWeight}kg target</span> · {ex.muscles}</div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: "1.1rem", color: exDone ? T.green : T.text3 }}>{exSets.filter(s => s.logged).length}/{ex.sets}</span>
+                  <span style={{ fontSize: "0.65rem", color: T.text3, marginLeft: 4, display: "inline-block", transform: isOpen ? "rotate(180deg)" : "none" }}>▾</span>
+                </div>
+              </div>
+              {isOpen && (
+                <div style={{ padding: "0 1rem 1rem" }}>
+                  {ex.tip && <div style={{ fontSize: "0.73rem", color: T.text2, lineHeight: 1.5, background: T.s2, borderRadius: 8, padding: "0.55rem 0.75rem", marginBottom: "0.7rem", borderLeft: `3px solid ${c}` }}>💡 {ex.tip}</div>}
+                  <div style={{ display: "grid", gridTemplateColumns: "28px 1fr 1fr 56px", gap: "0.4rem", padding: "0 0.2rem 0.35rem", fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: T.text3 }}>
+                    <span>SET</span><span>KG</span><span>REPS</span><span></span>
+                  </div>
+                  {exSets.map((set, si) => {
+                    const isDone = set.logged;
+                    const isNext = !isDone && exSets.slice(0, si).every(s => s.logged);
+                    return (
+                      <div key={si} style={{ display: "grid", gridTemplateColumns: "28px 1fr 1fr 56px", gap: "0.4rem", alignItems: "center", padding: "0.45rem 0.2rem", borderRadius: 8, background: isDone ? "rgba(34,211,160,0.07)" : isNext ? c + "0f" : "transparent" }}>
+                        <span style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: "0.95rem", color: isDone ? T.green : T.text3, textAlign: "center" }}>{isDone ? "✓" : si + 1}</span>
+                        <input id={`cw${ei}-${si}`} type="number" step="2.5" min="0" max="200" defaultValue={set.weight} readOnly={isDone}
+                          style={{ background: T.s2, border: `1.5px solid ${isDone ? T.green + "66" : T.border}`, borderRadius: 8, padding: "0.42rem 0.4rem", color: T.text, textAlign: "center", width: "100%", outline: "none", fontFamily: "inherit", fontWeight: 700, fontSize: "0.88rem", WebkitAppearance: "none" }} />
+                        <input id={`cr${ei}-${si}`} type="number" step="1" min="0" max="100" defaultValue={set.reps} readOnly={isDone}
+                          style={{ background: T.s2, border: `1.5px solid ${isDone ? T.green + "66" : T.border}`, borderRadius: 8, padding: "0.42rem 0.4rem", color: T.text, textAlign: "center", width: "100%", outline: "none", fontFamily: "inherit", fontWeight: 700, fontSize: "0.88rem", WebkitAppearance: "none" }} />
+                        {isDone
+                          ? <button onClick={() => setSets(p => { const n = {...p}; n[ei] = [...n[ei]]; n[ei][si] = {...n[ei][si], logged: false}; return n; })} style={{ background: T.s3, border: "none", borderRadius: 8, padding: "0.42rem 0", color: T.text2, fontSize: "0.6rem", fontWeight: 900, cursor: "pointer", width: "100%", fontFamily: "inherit", textTransform: "uppercase" }}>UNDO</button>
+                          : <button onClick={() => logSet(ei, si)} style={{ background: c, border: "none", borderRadius: 8, padding: "0.42rem 0", color: T.bg, fontSize: "0.7rem", fontWeight: 900, cursor: "pointer", width: "100%", fontFamily: "'Barlow Condensed',sans-serif", textTransform: "uppercase" }}>LOG</button>}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+        {session.scoringNote && <div style={{ background: T.s2, borderRadius: 10, padding: "0.7rem 1rem", fontSize: "0.75rem", color: T.text2, borderLeft: `3px solid ${T.yellow}`, marginTop: "0.5rem" }}>🏆 Scoring: {session.scoringNote}</div>}
+      </div>
+
+      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 500, background: T.s1, borderTop: `1px solid ${T.border}`, padding: "0.8rem 1.2rem 1rem", display: "flex", gap: "0.8rem", alignItems: "center" }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: "1.2rem", color: c }}>{liveVol.toLocaleString()} pts</div>
+          <div style={{ height: 4, background: T.s3, borderRadius: 2, overflow: "hidden", marginTop: 3 }}>
+            <div style={{ height: "100%", width: `${pct}%`, background: c, borderRadius: 2, transition: "width 0.4s" }} />
+          </div>
+        </div>
+        <button onClick={() => onComplete({ sets, elapsed: Math.round((Date.now()-startTime)/60000), totalVol: liveVol })} disabled={!allDone}
+          style={{ ...btnStyle(allDone ? T.green : T.s3), opacity: allDone ? 1 : 0.5, color: allDone ? T.bg : T.text3, padding: "0.65rem 1.2rem", whiteSpace: "nowrap" }}>
+          Submit Score 🏆
+        </button>
+      </div>
+
+      {showRest && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(8,9,16,0.96)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
+          <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.2em", color: T.text3, marginBottom: "0.5rem" }}>Rest</div>
+          <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "5.5rem", letterSpacing: "0.05em", lineHeight: 1, color: restSecs <= 10 ? T.red : c }}>
+            {Math.floor(restSecs / 60)}:{String(restSecs % 60).padStart(2, "0")}
+          </div>
+          <div style={{ width: 180, height: 4, background: T.s3, borderRadius: 2, marginTop: "1rem", overflow: "hidden" }}>
+            <div style={{ height: "100%", width: `${restTotal ? (restSecs/restTotal*100) : 0}%`, background: c, borderRadius: 2, transition: "width 1s linear" }} />
+          </div>
+          <div style={{ display: "flex", gap: "0.8rem", marginTop: "1.5rem" }}>
+            <button onClick={() => { setRestSecs(s=>s+15); setRestTotal(t=>t+15); }} style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: "0.85rem", textTransform: "uppercase", padding: "0.6rem 1.1rem", borderRadius: 10, cursor: "pointer", background: T.s2, border: `1.5px solid ${T.border}`, color: T.text2 }}>+15s</button>
+            <button onClick={() => setShowRest(false)} style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: "0.85rem", textTransform: "uppercase", padding: "0.6rem 1.4rem", borderRadius: 10, cursor: "pointer", background: T.s2, border: `1.5px solid ${T.border}`, color: T.text2 }}>Skip</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── COMPETITION LEADERBOARD ──────────────────────────────────────────────────
+function CompLeaderboard({ profile, compDay, compScores, friends, onBack, onRefresh }) {
+  const [refreshing, setRefreshing] = useState(false);
+  const session = compDay?.session;
+  const c = session?.color || T.orange;
+
+  const allScores = Object.values(compScores).sort((a, b) => b.score - a.score);
+  const myScore = compScores[profile.uid];
+  const myRank = allScores.findIndex(s => s.uid === profile.uid) + 1;
+  const medals = ["🥇", "🥈", "🥉"];
+
+  async function handleRefresh() {
+    setRefreshing(true);
+    await onRefresh();
+    setRefreshing(false);
+  }
+
+  return (
+    <div style={appShell}>
+      <div style={{ background: `linear-gradient(135deg, ${c}22, ${T.s1})`, padding: "1.2rem", borderBottom: `1px solid ${c}33`, flexShrink: 0 }}>
+        <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.18em", color: c, marginBottom: "0.3rem" }}>⚔️ Battle Results</div>
+        <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "2rem", letterSpacing: "0.06em", lineHeight: 1, color: T.text }}>{session?.name}</div>
+      </div>
+
+      <div style={{ flex: 1, overflowY: "auto", padding: "1.2rem 1.2rem 5rem" }}>
+        {/* Your result */}
+        {myScore && (
+          <div style={{ background: `linear-gradient(135deg, ${c}22, ${c}08)`, border: `2px solid ${c}`, borderRadius: 16, padding: "1.2rem", marginBottom: "1.2rem", textAlign: "center" }}>
+            <div style={{ fontSize: "2.5rem", marginBottom: "0.4rem" }}>{medals[myRank - 1] || "🏅"}</div>
+            <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.2rem", letterSpacing: "0.05em", color: c }}>You ranked #{myRank}</div>
+            <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: "3rem", color: T.text, lineHeight: 1, margin: "0.3rem 0" }}>{myScore.score.toLocaleString()}</div>
+            <div style={{ fontSize: "0.72rem", color: T.text3, textTransform: "uppercase", letterSpacing: "0.1em" }}>competition points</div>
+          </div>
+        )}
+
+        {/* Full leaderboard */}
+        <div style={{ marginBottom: "1rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.8rem" }}>
+            <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: T.text3 }}>Leaderboard</div>
+            <button onClick={handleRefresh} style={{ background: "transparent", border: `1px solid ${T.border}`, borderRadius: 6, padding: "0.25rem 0.7rem", fontSize: "0.7rem", color: T.text3, cursor: "pointer", fontFamily: "inherit" }}>
+              {refreshing ? "⟳" : "↻ Refresh"}
+            </button>
+          </div>
+          {allScores.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "1.5rem", color: T.text3, fontSize: "0.85rem" }}>Waiting for others to submit their scores...</div>
+          ) : (
+            allScores.map((s, i) => {
+              const isMe = s.uid === profile.uid;
+              return (
+                <div key={s.uid} style={{ display: "flex", alignItems: "center", gap: "0.8rem", padding: "0.85rem 1rem", borderRadius: 12, border: `1.5px solid ${isMe ? c : T.border}`, background: isMe ? c + "12" : T.s1, marginBottom: "0.5rem" }}>
+                  <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: "1.5rem", width: 32, textAlign: "center" }}>{medals[i] || `#${i + 1}`}</div>
+                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: isMe ? c + "33" : T.s3, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Bebas Neue',sans-serif", fontSize: "1rem", color: isMe ? c : T.text3 }}>{s.name?.[0]?.toUpperCase()}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 700, fontSize: "0.88rem", color: isMe ? c : T.text }}>{s.name} {isMe && <span style={{ fontSize: "0.7rem", color: T.text3 }}>(you)</span>}</div>
+                    <div style={{ fontSize: "0.7rem", color: T.text3 }}>@{s.username}</div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 900, fontSize: "1.4rem", color: isMe ? c : T.text }}>{s.score.toLocaleString()}</div>
+                    <div style={{ fontSize: "0.58rem", color: T.text3, textTransform: "uppercase", letterSpacing: "0.1em" }}>pts</div>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {allScores.length < (compDay?.participants?.length || 0) && (
+          <div style={{ background: T.s2, borderRadius: 10, padding: "0.7rem 1rem", fontSize: "0.78rem", color: T.text2, textAlign: "center", borderLeft: `3px solid ${T.yellow}` }}>
+            ⏳ Waiting on {(compDay.participants.length) - allScores.length} more result{(compDay.participants.length - allScores.length) !== 1 ? "s" : ""}...
+          </div>
+        )}
+      </div>
+
+      <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 500, background: T.s1, borderTop: `1px solid ${T.border}`, padding: "0.8rem 1.2rem 1rem" }}>
+        <button onClick={onBack} style={{ ...btnStyle(T.s3), width: "100%", border: `1.5px solid ${T.border}`, color: T.text2 }}>← Back to Squad</button>
+      </div>
+    </div>
+  );
+}
+
+
+const appShell = { background: "#000000", minHeight: "100vh", display: "flex", flexDirection: "column", maxWidth: 500, margin: "0 auto", fontFamily: "'Barlow', sans-serif", color: "#f0f0f0" };
+const topBar = { padding: "0.8rem 1.2rem", borderBottom: `1px solid ${T.border}`, background: "#050505", flexShrink: 0, display: "flex", alignItems: "center", gap: "0.8rem" };
+const topBarTitle = { fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: "1rem", textTransform: "uppercase", letterSpacing: "0.05em" };
+const backBtn = { background: "transparent", border: "none", color: T.text3, fontSize: "0.82rem", cursor: "pointer", fontFamily: "inherit", padding: "0.2rem 0", fontWeight: 700 };
+const btnStyle = (bg) => ({ background: bg, border: "none", borderRadius: 10, padding: "0.7rem 1.2rem", fontSize: "0.88rem", fontWeight: 900, cursor: "pointer", fontFamily: "'Barlow Condensed', sans-serif", textTransform: "uppercase", letterSpacing: "0.08em", color: bg === T.accent || bg === T.green || bg === T.yellow ? "#000000" : "#000000" });
+
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<FitForge />);
+  </script>
+</body>
+</html>
