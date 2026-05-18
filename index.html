@@ -172,7 +172,7 @@ function calcCompScore(log) {
 async function callClaude(prompt, onChunk) {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "x-api-key": "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", "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+    headers: { "Content-Type": "application/json", "x-api-key": getApiKey(), "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
     body: JSON.stringify({
       model: "claude-sonnet-4-20250514",
       max_tokens: 4000,
@@ -493,6 +493,10 @@ function FitForge() {
       setScreen("compday");
     } catch (e) { console.error(e); setScreen("social"); }
   }
+
+  // ── API KEY CHECK ──
+  const [apiKeyReady, setApiKeyReady] = useState(hasApiKey());
+  if (!apiKeyReady) return <ApiKeySetup onDone={() => setApiKeyReady(true)} />;
 
   // ── SCREENS ──
   if (screen === "splash") return <Splash onStart={() => setScreen(stored.profile ? "plan" : "profile")} hasProfile={!!stored.profile} />;
@@ -1428,7 +1432,7 @@ async function analyseProgressPhoto(imageBase64, profile, sessionLogs, weekNum) 
 
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "x-api-key": "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", "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+    headers: { "Content-Type": "application/json", "x-api-key": getApiKey(), "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
     body: JSON.stringify({
       model: "claude-sonnet-4-20250514",
       max_tokens: 1000,
