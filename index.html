@@ -20,6 +20,38 @@
   <script type="text/babel">
     const { useState, useEffect, useRef, useCallback } = React;
 
+// ─── ROBUST JSON PARSER ───────────────────────────────────────────────────────
+function extractJSON(raw) {
+  if (!raw) return null;
+  // Strip markdown fences
+  let s = raw.replace(/```json\n?/g,"").replace(/```\n?/g,"").trim();
+  // Find outermost braces
+  const start = s.indexOf('{');
+  const end = s.lastIndexOf('}');
+  if (start === -1 || end === -1) return null;
+  s = s.slice(start, end + 1);
+  // Fix common issues: smart quotes, unescaped apostrophes in strings
+  s = s.replace(/[\u2018\u2019]/g, "\'");
+  s = s.replace(/[\u201C\u201D]/g, '\"');
+  // Try parse as-is first
+  try { return JSON.parse(s); } catch(e1) {
+    // Try removing control characters
+    try {
+      const clean = s.replace(/[\x00-\x1F\x7F]/g, " ");
+      return JSON.parse(clean);
+    } catch(e2) {
+      // Last resort: use Function eval (safe since we control source)
+      try {
+        return (new Function("return " + s))();
+      } catch(e3) {
+        console.error("JSON parse failed:", e3.message);
+        return null;
+      }
+    }
+  }
+}
+
+
 
 function ApiKeySetup({ onDone }) {
   const [key, setKey] = useState("");
@@ -458,11 +490,8 @@ function FitForge() {
         rawJson = partial;
         setGenerateProgress(`Designing your programme... (${partial.split("\n").length} lines)`);
       });
-      let cleaned = rawJson.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-      const firstBrace = cleaned.indexOf('{');
-      const lastBrace = cleaned.lastIndexOf('}');
-      if (firstBrace !== -1 && lastBrace !== -1) cleaned = cleaned.slice(firstBrace, lastBrace + 1);
-      const parsed = JSON.parse(cleaned);
+      const parsed = extractJSON(rawJson);
+      if (!parsed) throw new Error("Could not parse plan JSON");
       setPlan(parsed);
       setCurrentWeek(1);
       setSessionLogs({});
@@ -479,11 +508,8 @@ function FitForge() {
       const prompt = buildSummaryPrompt(profile, plan, sessionLogs);
       let raw = "";
       await callClaude(prompt, (p) => { raw = p; });
-      let cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-      const firstBrace = cleaned.indexOf('{');
-      const lastBrace = cleaned.lastIndexOf('}');
-      if (firstBrace !== -1 && lastBrace !== -1) cleaned = cleaned.slice(firstBrace, lastBrace + 1);
-      const parsed = JSON.parse(cleaned);
+      const parsed = extractJSON(raw);
+      if (!parsed) throw new Error("Could not parse review JSON");
       setReviewData(parsed);
       setScreen("review");
     } catch (e) { console.error(e); setScreen("review"); }
@@ -539,11 +565,8 @@ function FitForge() {
     try {
       let raw = "";
       await callClaude(prompt, p => { raw = p; setGenerateProgress(`Building competition session... (${raw.split("\n").length} lines)`); });
-      let cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-      const firstBrace = cleaned.indexOf('{');
-      const lastBrace = cleaned.lastIndexOf('}');
-      if (firstBrace !== -1 && lastBrace !== -1) cleaned = cleaned.slice(firstBrace, lastBrace + 1);
-      const session = JSON.parse(cleaned);
+      const session = extractJSON(raw);
+      if (!session) throw new Error("Could not parse comp JSON");
       const comp = { id: compId, session, participants: [profile.uid, ...acceptedFriends.map(f => f.uid)], createdAt: new Date().toISOString(), createdBy: profile.uid };
       // Publish comp to shared storage so friends can see it
       await sharedSet(`compday:${compId}`, comp);
@@ -1549,8 +1572,9 @@ Return ONLY this JSON (no markdown, no explanation):
   if (!response.ok) throw new Error("API error");
   const data = await response.json();
   const text = data.content?.map(c => c.text || "").join("") || "";
-  const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-  return JSON.parse(cleaned);
+  const result = extractJSON(text);
+  if (!result) throw new Error("Could not parse photo analysis JSON");
+  return result;
 }
 
 // ─── PROGRESS PHOTO SCREEN ────────────────────────────────────────────────────
